@@ -18,6 +18,7 @@ import {
   MessageCircle,
   Bell,
 } from "lucide-react";
+import { authClient } from "@/app/lib/auth-client";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: Home },
@@ -26,9 +27,10 @@ const NAV_ITEMS = [
 ];
 
 // Replace with real auth state (e.g. useSession / context) when wiring this up.
-const user = null;
 
 export default function Navbar() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const router = useRouter();
   const pathname = usePathname();
 
@@ -40,8 +42,8 @@ export default function Navbar() {
     setOpen(false);
   };
 
-  const handleLogout = () => {
-    console.log("logout");
+  const handleLogout = async () => {
+    await authClient.signOut();
     setOpen(false);
   };
 
@@ -188,8 +190,8 @@ export default function Navbar() {
                       ring-brand/30
                       "
                     >
-                      <Avatar.Image src={user.photo} alt={user.name} />
-                      <Avatar.Fallback>MH</Avatar.Fallback>
+                      <Avatar.Image src={user.image} alt={user.name} />
+                      <Avatar.Fallback>{user.name.slice(0, 2)}</Avatar.Fallback>
                     </Avatar>
 
                     <div className="hidden lg:block text-left">
@@ -197,7 +199,7 @@ export default function Navbar() {
                         {user.name}
                       </p>
                       <p className="text-xs text-gray-500 leading-tight">
-                        Member
+                        {user.role}
                       </p>
                     </div>
 

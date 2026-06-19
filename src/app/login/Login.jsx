@@ -13,6 +13,7 @@ import {
 } from "@heroui/react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Logo from "@/components/shared/Logo";
+import { authClient } from "../lib/auth-client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,15 +24,31 @@ export default function LoginPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
-    const payload = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    // TODO: replace with real auth call
-    console.log("login payload", payload);
-    setIsSubmitting(false);
+      const email = formData.get("email");
+      const password = formData.get("password");
+
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: "/",
+      });
+
+      if (error) {
+        console.error("Login failed:", error);
+        return;
+      }
+
+      console.log("Login success:", data);
+
+      router.push("/");
+    } catch (err) {
+      console.error("Something went wrong:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

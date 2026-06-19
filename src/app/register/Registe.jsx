@@ -14,6 +14,8 @@ import {
 } from "@heroui/react";
 import { Mail, Lock, User, Eye, EyeOff, Upload, X } from "lucide-react";
 import Logo from "@/components/shared/Logo";
+import { authClient } from "../lib/auth-client";
+import { imageUploader } from "../lib/imageUpload";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -40,17 +42,44 @@ export default function RegisterPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
-    const payload = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      photo: photoFile,
-    };
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    // TODO: replace with real registration call
-    console.log("register payload", payload);
-    setIsSubmitting(false);
+      const name = formData.get("name");
+      const email = formData.get("email");
+      const password = formData.get("password");
+
+      let imgUrl = "";
+
+      // Upload image if exists
+      if (photoFile) {
+        const img = await imageUploader(photoFile);
+        imgUrl = img.url;
+      }
+
+      const { data, error } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+        image: imgUrl,
+        role: "member",
+
+        callbackURL: "/",
+      });
+
+      if (error) {
+        console.log("Register error:", error);
+        return;
+      }
+
+      console.log("Register success:", data);
+
+      router.push("/");
+    } catch (error) {
+      console.log("Something went wrong:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
