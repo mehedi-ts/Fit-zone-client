@@ -33,6 +33,7 @@ export default function Navbar() {
   const user = session?.user;
   const router = useRouter();
   const pathname = usePathname();
+  const isDashboard = pathname.startsWith("/dashboard");
 
   const [open, setOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
@@ -52,12 +53,12 @@ export default function Navbar() {
 
   return (
     <header
-      className="
+      className={`
       sticky top-0 z-50
       border-b border-white/30
       bg-page-bg/70
-      backdrop-blur-xl
-      "
+      backdrop-blur-xl ${isDashboard ? "hidden" : ""}
+      `}
     >
       <div
         className="
