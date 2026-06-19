@@ -29,8 +29,9 @@ const NAV_ITEMS = [
 // Replace with real auth state (e.g. useSession / context) when wiring this up.
 
 export default function Navbar() {
-  const { data: session } = authClient.useSession();
+  const { data: session, error } = authClient.useSession();
   const user = session?.user;
+  console.log(user, "Session Error:", error);
   const router = useRouter();
   const pathname = usePathname();
   const isDashboard = pathname.startsWith("/dashboard");
@@ -216,7 +217,7 @@ export default function Navbar() {
                     <Dropdown.Menu>
                       <Dropdown.Item
                         id="dashboard"
-                        onAction={() => goTo("/dashboard")}
+                        onAction={() => goTo(`/dashboard/${user.role}`)}
                       >
                         <div className="flex items-center gap-3">
                           <LayoutDashboard size={18} />
@@ -366,7 +367,7 @@ export default function Navbar() {
 
                       {user && (
                         <button
-                          onClick={() => goTo("/dashboard")}
+                          onClick={() => goTo(`/dashboard/${user.role}`)}
                           aria-current={
                             isActive("/dashboard") ? "page" : undefined
                           }

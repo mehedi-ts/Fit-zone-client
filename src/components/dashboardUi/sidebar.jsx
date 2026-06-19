@@ -1,4 +1,5 @@
 "use client";
+import { useUser } from "@/app/lib/getUserClient";
 import { Bars } from "@gravity-ui/icons";
 import {
   LayoutDashboard,
@@ -17,9 +18,12 @@ import {
   MessageSquarePlus,
   ShieldCheck,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export function Sidebar() {
+  const userData = useUser();
+  console.log("User Data:", userData);
   const [active, setActive] = useState("Home");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dashboardItems = {
@@ -50,27 +54,27 @@ export function Sidebar() {
       {
         icon: LayoutDashboard,
         label: "Overview",
-        href: "/dashboard",
+        href: "/dashboard/trainer",
       },
       {
         icon: PlusCircle,
         label: "Add Class",
-        href: "/dashboard/add-class",
+        href: "/dashboard/trainer/add-class",
       },
       {
         icon: Dumbbell,
         label: "My Classes",
-        href: "/dashboard/my-classes",
+        href: "/dashboard/trainer/my-classes",
       },
       {
         icon: MessageSquarePlus,
         label: "Add Forum Post",
-        href: "/dashboard/add-forum-post",
+        href: "/dashboard/trainer/add-forum-post",
       },
       {
         icon: MessageSquare,
         label: "My Forum Posts",
-        href: "/dashboard/my-forum-posts",
+        href: "/dashboard/trainer/my-forum-posts",
       },
     ],
 
@@ -117,17 +121,18 @@ export function Sidebar() {
       },
     ],
   };
-  const role = "trainer";
+  const role = userData?.role || "member"; // Default to 'member' if role is not available
   const navMain = dashboardItems[role];
 
-  const NavItem = ({ icon: Icon, label, badge }) => (
-    <button
-      type="button"
-      onClick={() => {
-        setActive(label);
-        setDrawerOpen(false);
-      }}
-      className={`
+  const NavItem = ({ icon: Icon, label, badge, href }) => (
+    <Link href={href}>
+      <button
+        type="button"
+        onClick={() => {
+          setActive(label);
+          setDrawerOpen(false);
+        }}
+        className={`
         group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm
         transition-all duration-150
         ${
@@ -136,18 +141,19 @@ export function Sidebar() {
             : "font-normal text-default-500 hover:bg-default-100 hover:text-foreground"
         }
       `}
-    >
-      {active === label && (
-        <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm bg-[#ff6b35]" />
-      )}
-      <Icon className="size-[18px] shrink-0" />
-      <span>{label}</span>
-      {badge && (
-        <span className="ml-auto rounded-full bg-[#ff6b35] px-1.5 py-px text-[10px] font-medium leading-4 text-white">
-          {badge}
-        </span>
-      )}
-    </button>
+      >
+        {active === label && (
+          <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm bg-[#ff6b35]" />
+        )}
+        <Icon className="size-[18px] shrink-0" />
+        <span>{label}</span>
+        {badge && (
+          <span className="ml-auto rounded-full bg-[#ff6b35] px-1.5 py-px text-[10px] font-medium leading-4 text-white">
+            {badge}
+          </span>
+        )}
+      </button>
+    </Link>
   );
 
   const navContent = (
@@ -184,12 +190,14 @@ export function Sidebar() {
 
   const userBlock = (
     <div className="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-default-100 cursor-pointer">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#ff6b35] to-[#ff9a6c] text-[11px] font-medium text-white">
-        RK
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand to-[#ff9a6c] text-[11px] font-medium text-white">
+        {userData?.name?.slice(0, 2).toUpperCase() || "RK"}
       </div>
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-foreground">Rahim K.</p>
-        <p className="text-[11px] text-default-400">Admin</p>
+        <p className="truncate text-sm font-medium text-foreground">
+          {userData?.name || ""}
+        </p>
+        <p className="text-[11px] text-default-400">{userData?.role || ""}</p>
       </div>
       <span className="ml-auto text-default-300">···</span>
     </div>
@@ -231,12 +239,12 @@ export function Sidebar() {
         {/* Drawer */}
         <div
           className={`
-            fixed left-0 top-0 z-50 flex h-full w-[220px] flex-col bg-background shadow-xl
+            fixed left-0 top-0 z-50 flex h-full w-55 flex-col bg-background shadow-xl
             transition-transform duration-250 ease-out
             ${drawerOpen ? "translate-x-0" : "-translate-x-full"}
           `}
         >
-          <div className="flex items-center border-b border-default-100 px-4 py-[18px]">
+          <div className="flex items-center border-b border-default-100 px-4 py-4.5">
             {brandBlock}
             <button
               type="button"

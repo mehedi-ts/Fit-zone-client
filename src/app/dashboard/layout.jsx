@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/dashboardUi/sidebar";
+import Link from "next/link";
 
 export default function DashboardLayout({ children }) {
   return (
@@ -17,7 +18,7 @@ export default function DashboardLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-2 rounded-lg border border-default-200 px-3 py-1.5 text-xs text-default-400 sm:flex cursor-pointer hover:border-default-300 transition-colors">
+            <div className="hidden cursor-pointer items-center gap-2 rounded-lg border border-default-200 px-3 py-1.5 text-xs text-default-400 transition-colors hover:border-default-300 sm:flex">
               <svg
                 width="12"
                 height="12"
@@ -31,15 +32,19 @@ export default function DashboardLayout({ children }) {
               </svg>
               Search...
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#ff6b35] to-[#ff9a6c] text-[11px] font-medium text-white cursor-pointer">
-              RK
-            </div>
+
+            <Link
+              href="/"
+              className="rounded-lg border border-default-200 px-3 py-1.5 text-xs font-medium transition-colors hover:border-default-300 hover:bg-default-100"
+            >
+              Continue to Website →
+            </Link>
           </div>
         </header>
 
         {/* Page content */}
         <main className="flex-1 p-5 lg:p-6">
-          <div className="rounded-xl border border-default-100 bg-background p-5 shadow-sm">
+          <div className="rounded-xl min-h-screen border border-default-100 bg-background py-4 shadow-sm">
             {children}
           </div>
         </main>
