@@ -74,7 +74,7 @@ export function Sidebar() {
       {
         icon: MessageSquare,
         label: "My Forum Posts",
-        href: "/dashboard/trainer/my-forum-posts",
+        href: "/dashboard/trainer/my-forum",
       },
     ],
 
