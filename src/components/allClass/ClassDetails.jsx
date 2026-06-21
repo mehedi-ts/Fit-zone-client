@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -63,11 +63,11 @@ function initials(name) {
     .toUpperCase();
 }
 
-export default function ClassDetails({ classData }) {
+export default function ClassDetails({ classData, isBooked }) {
   const user = useUser();
-  const [alreadyBooked, setAlreadyBooked] = useState(false);
-  const [isCheckingBooking, setIsCheckingBooking] = useState(true);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [alreadyBooked, setAlreadyBooked] = useState(isBooked);
 
   const {
     _id,
@@ -82,53 +82,6 @@ export default function ClassDetails({ classData }) {
     price,
     description,
   } = classData;
-
-  useEffect(() => {
-    // No logged-in user yet — nothing to check against.
-    if (!user?.email || !_id) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsCheckingBooking(false);
-      return;
-    }
-
-    let isCancelled = false;
-
-    const checkBooking = async () => {
-      setIsCheckingBooking(true);
-
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/check?classId=${_id}&email=${encodeURIComponent(user.email)}`,
-        );
-
-        if (!res.ok) {
-          throw new Error("Failed to check booking status");
-        }
-
-        const data = await res.json();
-
-        if (!isCancelled) {
-          setAlreadyBooked(Boolean(data.alreadyBooked));
-        }
-      } catch (error) {
-        console.error("Failed to check booking status:", error);
-        // Fail safe: don't block booking just because the check failed.
-        if (!isCancelled) {
-          setAlreadyBooked(false);
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsCheckingBooking(false);
-        }
-      }
-    };
-
-    checkBooking();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [user?.email, _id]);
 
   const categoryMeta =
     CATEGORY_META[category?.toLowerCase()] || CATEGORY_META.strength;
@@ -290,8 +243,7 @@ export default function ClassDetails({ classData }) {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                disabled={isCheckingBooking}
-                className="inline-flex items-center gap-2 bg-brand text-white font-medium px-6 py-3 rounded-xl shadow-sm shadow-orange-500/20 hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 bg-brand text-white font-medium px-6 py-3 rounded-xl shadow-sm shadow-orange-500/20 hover:opacity-90 transition-opacity"
               >
                 Book Class
                 <ArrowRight size={16} />
