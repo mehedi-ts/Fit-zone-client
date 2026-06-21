@@ -31,7 +31,7 @@ export function Sidebar() {
       {
         icon: LayoutDashboard,
         label: "Overview",
-        href: "/dashboard",
+        href: "/dashboard/member",
       },
       {
         icon: CalendarCheck,

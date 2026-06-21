@@ -11,5 +11,5 @@ export async function checkBooked(classId, userId) {
   }
 
   const data = await res.json();
-  return Boolean(data.booked); // adjust "booked" to match your API's actual field name
+  return Boolean(data.alreadyBooked); // adjust "alreadyBooked" to match your API's actual field name
 }
