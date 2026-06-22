@@ -60,6 +60,14 @@ export async function POST(req) {
         name: bookingData.name || "",
         email: bookingData.email || "",
         phone: bookingData.phone || "",
+        trainerName: classInfo.trainerName || "",
+        trainerEmail: classInfo.trainerEmail || "",
+        trainerID: classInfo.trainerId || "",
+        trainerImage: classInfo.image || "",
+        duration: classInfo.duration || "",
+        startTime: classInfo.startTime || "",
+        category: classInfo.category || "",
+        price: classInfo.price || "",
       },
     });
 

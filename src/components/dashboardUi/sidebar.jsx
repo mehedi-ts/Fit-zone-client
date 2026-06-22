@@ -36,17 +36,17 @@ export function Sidebar() {
       {
         icon: CalendarCheck,
         label: "Booked Classes",
-        href: "/dashboard/booked-classes",
+        href: "/dashboard/member/booked-classes",
       },
       {
         icon: UserPlus,
         label: "Apply as Trainer",
-        href: "/dashboard/apply-trainer",
+        href: "/dashboard/member/apply-trainer",
       },
       {
         icon: Heart,
         label: "Favorite Classes",
-        href: "/dashboard/favorite-classes",
+        href: "/dashboard/member/favorite-classes",
       },
     ],
 

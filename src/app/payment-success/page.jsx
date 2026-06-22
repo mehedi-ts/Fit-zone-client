@@ -12,6 +12,7 @@ export default async function Success({ searchParams }) {
   const session = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ["line_items", "payment_intent"],
   });
+  console.log("Stripe Session55:", session);
 
   const status = session.status;
   const customerEmail = session.customer_details?.email;
@@ -32,6 +33,7 @@ export default async function Success({ searchParams }) {
       name: session.metadata.name,
       email: session.metadata.email,
       phone: session.metadata.phone,
+
       stripeSessionId: session.id,
       paymentIntentId: session.payment_intent?.id,
       paymentStatus: "paid",
