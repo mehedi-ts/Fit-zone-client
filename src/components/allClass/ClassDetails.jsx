@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Bookmark,
+  Heart,
   Clock,
   BarChart3,
   Calendar,
@@ -65,9 +65,11 @@ function initials(name) {
 
 export default function ClassDetails({ classData, isBooked }) {
   const user = useUser();
+  console.log("this is details page user", user);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [alreadyBooked, setAlreadyBooked] = useState(isBooked);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const {
     _id,
@@ -93,6 +95,44 @@ export default function ClassDetails({ classData, isBooked }) {
   const handleBookingSuccess = () => {
     setAlreadyBooked(true);
     setIsModalOpen(false);
+  };
+  const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+  const toggleFavorite = async () => {
+    if (!user?.id) {
+      return;
+    }
+
+    if (isFavorite) {
+      await fetch(`${SERVER_URL}/favorites`, {
+        method: "DELETE",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          userId: user.id,
+          classId: _id,
+        }),
+      });
+
+      setIsFavorite(false);
+    } else {
+      await fetch(`${SERVER_URL}/favorites`, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          userId: user.id,
+          classId: _id,
+        }),
+      });
+
+      setIsFavorite(true);
+    }
   };
 
   return (
@@ -126,10 +166,16 @@ export default function ClassDetails({ classData, isBooked }) {
             </Link>
             <button
               type="button"
-              aria-label="Save class"
-              className="h-10 w-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center text-slate-600 hover:text-brand transition-colors"
+              aria-label="Favorite class"
+              onClick={toggleFavorite}
+              className="h-10 w-10 rounded-full bg-white/90 backdrop-blur shadow-sm flex items-center justify-center transition"
             >
-              <Bookmark size={18} />
+              <Heart
+                size={20}
+                className={
+                  isFavorite ? "text-red-500 fill-red-500" : "text-slate-600"
+                }
+              />
             </button>
           </div>
 

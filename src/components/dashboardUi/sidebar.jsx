@@ -82,12 +82,12 @@ export function Sidebar() {
       {
         icon: LayoutDashboard,
         label: "Overview",
-        href: "/dashboard",
+        href: "/dashboard/admin",
       },
       {
         icon: Users,
         label: "Manage Users",
-        href: "/dashboard/manage-users",
+        href: "/dashboard/admin/manage-users",
       },
       {
         icon: GraduationCap,
@@ -97,27 +97,27 @@ export function Sidebar() {
       {
         icon: UserCog,
         label: "Manage Trainers",
-        href: "/dashboard/manage-trainers",
+        href: "/dashboard/admin/manage-trainers",
       },
       {
         icon: BookOpen,
         label: "Manage Classes",
-        href: "/dashboard/manage-classes",
+        href: "/dashboard/admin/manage-classes",
       },
       {
         icon: MessageSquarePlus,
         label: "Add Forum Post",
-        href: "/dashboard/add-forum-post",
+        href: "/dashboard/admin/add-forum-post",
       },
       {
         icon: ShieldCheck,
         label: "Forum Post Manage",
-        href: "/dashboard/forum-post-manage",
+        href: "/dashboard/admin/forum-post-manage",
       },
       {
         icon: CreditCard,
         label: "Transactions",
-        href: "/dashboard/transactions",
+        href: "/dashboard/admin/transactions",
       },
     ],
   };

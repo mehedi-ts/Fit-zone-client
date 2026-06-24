@@ -5,25 +5,32 @@ import { Card, Chip, Separator } from "@heroui/react";
 const STATUS_CONFIG = {
   Pending: {
     color: "warning",
-    dot: "bg-amber-500",
-    description: "An admin will review your application shortly.",
+    title: "Application Under Review",
+    description:
+      "Your trainer application is currently being reviewed by our admin team.",
   },
+
   Approved: {
     color: "success",
-    dot: "bg-[var(--color-brand-success)]",
-    description: "Your application has been approved.",
+    title: "Application Approved",
+    description: "Congratulations! Your trainer application has been approved.",
   },
+
   Rejected: {
     color: "danger",
-    dot: "bg-red-500",
-    description: "Your application was not approved this time.",
+    title: "Application Rejected",
+    description:
+      "Unfortunately, your application was not approved at this time.",
   },
 };
 
 function formatDate(dateString) {
   if (!dateString) return "—";
+
   const date = new Date(dateString);
+
   if (Number.isNaN(date.getTime())) return dateString;
+
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -36,88 +43,197 @@ export default function ApplicationStatusCard({
   experience,
   specialty,
   createdAt,
+  feedback,
 }) {
-  const statusConfig = STATUS_CONFIG[status] ?? STATUS_CONFIG.Pending;
+  const statusConfig = STATUS_CONFIG[status] || STATUS_CONFIG.Pending;
 
   return (
-    <div className="w-full max-w-2xl">
-      <Card className="rounded-3xl border border-[var(--color-brand-dark)]/5 bg-white p-6 shadow-xl shadow-[var(--color-brand-dark)]/5 sm:p-8">
-        {/* Header: title + status badge */}
-        <Card.Header className="mb-6 flex flex-col gap-4 p-0 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <Card.Title className="text-xl font-bold text-[var(--color-brand-dark)] sm:text-2xl">
-              Trainer Application
-            </Card.Title>
-            <Card.Description className="mt-1 text-sm text-[var(--color-brand-dark)]/55">
-              Here&apos;s the current status of your submission.
-            </Card.Description>
-          </div>
-
+    <div className="flex min-h-[80vh] items-center justify-center px-4 py-10">
+      <Card
+        className="
+        w-full 
+        max-w-3xl
+        rounded-3xl
+        border
+        border-[var(--color-brand-dark)]/10
+        bg-white
+        shadow-2xl
+      "
+      >
+        <Card.Header className="flex flex-col items-center p-8 text-center">
           <Chip
             color={statusConfig.color}
-            variant="soft"
+            variant="flat"
             size="lg"
-            className="self-start rounded-full px-4 py-2 text-sm font-semibold sm:self-auto"
+            className="rounded-full px-5 py-2 font-bold"
           >
-            <span className={`h-2 w-2 rounded-full ${statusConfig.dot}`} />
-            <Chip.Label>{status}</Chip.Label>
+            {status}
           </Chip>
+
+          <Card.Title
+            className="
+            mt-5
+            text-3xl
+            font-extrabold
+            text-[var(--color-brand-dark)]
+          "
+          >
+            {statusConfig.title}
+          </Card.Title>
+
+          <Card.Description
+            className="
+            mt-3
+            max-w-xl
+            text-sm
+            text-[var(--color-brand-dark)]/60
+          "
+          >
+            {statusConfig.description}
+          </Card.Description>
         </Card.Header>
 
-        <Card.Content className="p-0">
-          {/* Information rows */}
-          <div className="flex flex-col divide-y divide-[var(--color-brand-dark)]/8">
-            <div className="flex items-center justify-between gap-4 py-3.5">
-              <span className="text-sm font-medium text-[var(--color-brand-dark)]/55">
+        <Card.Content className="p-8 pt-0">
+          {/* Info Cards */}
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <div
+              className="
+              rounded-2xl
+              bg-[var(--color-brand)]/5
+              p-5
+              text-center
+            "
+            >
+              <p className="text-xs text-[var(--color-brand-dark)]/50">
                 Experience
-              </span>
-              <span className="text-sm font-semibold text-[var(--color-brand-dark)]">
-                {experience} {experience === 1 ? "Year" : "Years"}
-              </span>
+              </p>
+
+              <h3
+                className="
+                mt-2
+                text-2xl
+                font-bold
+                text-[var(--color-brand-dark)]
+              "
+              >
+                {experience}
+              </h3>
+
+              <p className="text-sm text-[var(--color-brand-dark)]/60">Years</p>
             </div>
 
-            <div className="flex items-center justify-between gap-4 py-3.5">
-              <span className="text-sm font-medium text-[var(--color-brand-dark)]/55">
+            <div
+              className="
+              rounded-2xl
+              bg-[var(--color-brand)]/5
+              p-5
+              text-center
+            "
+            >
+              <p className="text-xs text-[var(--color-brand-dark)]/50">
                 Specialty
-              </span>
-              <span className="text-sm font-semibold text-[var(--color-brand-dark)]">
+              </p>
+
+              <h3
+                className="
+                mt-2
+                text-xl
+                font-bold
+                text-[var(--color-brand-dark)]
+              "
+              >
                 {specialty}
-              </span>
+              </h3>
             </div>
 
-            <div className="flex items-center justify-between gap-4 py-3.5">
-              <span className="text-sm font-medium text-[var(--color-brand-dark)]/55">
-                Submission Date
-              </span>
-              <span className="text-sm font-semibold text-[var(--color-brand-dark)]">
+            <div
+              className="
+              rounded-2xl
+              bg-[var(--color-brand)]/5
+              p-5
+              text-center
+            "
+            >
+              <p className="text-xs text-[var(--color-brand-dark)]/50">
+                Applied Date
+              </p>
+
+              <h3
+                className="
+                mt-2
+                text-sm
+                font-semibold
+                text-[var(--color-brand-dark)]
+              "
+              >
                 {formatDate(createdAt)}
-              </span>
+              </h3>
             </div>
           </div>
 
-          <Separator className="my-6 bg-[var(--color-brand-dark)]/8" />
+          {/* Feedback */}
 
-          {/* Information section */}
-          <div className="flex items-start gap-3 rounded-2xl bg-[var(--color-brand)]/5 p-4 sm:p-5">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand)]/15 text-[var(--color-brand)]">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                className="h-4 w-4"
-                aria-hidden="true"
+          {feedback && (
+            <>
+              <Separator className="my-8" />
+
+              <div
+                className="
+                rounded-2xl
+                border
+                border-amber-200
+                bg-amber-50
+                p-6
+              "
               >
-                <path
-                  d="M12 8v5M12 16h.01M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <p className="text-sm leading-relaxed text-[var(--color-brand-dark)]/75">
-              Your trainer application has been submitted successfully and is
-              currently under review by the admin team.
+                <h3
+                  className="
+                  mb-2
+                  text-lg
+                  font-bold
+                  text-amber-800
+                "
+                >
+                  💬 Admin Feedback
+                </h3>
+
+                <p
+                  className="
+                  leading-relaxed
+                  text-amber-900
+                "
+                >
+                  {feedback}
+                </p>
+              </div>
+            </>
+          )}
+
+          <div
+            className="
+            mt-8
+            rounded-2xl
+            bg-[var(--color-brand)]/5
+            p-5
+            text-center
+          "
+          >
+            <p
+              className="
+              text-sm
+              leading-relaxed
+              text-[var(--color-brand-dark)]/70
+            "
+            >
+              {status === "Pending" &&
+                "Please wait while admin reviews your application."}
+
+              {status === "Approved" &&
+                "You can now work as an official trainer."}
+
+              {status === "Rejected" &&
+                "Please check admin feedback and try again later."}
             </p>
           </div>
         </Card.Content>
