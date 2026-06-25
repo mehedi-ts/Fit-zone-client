@@ -1,68 +1,76 @@
+import { getAllUsers } from "@/app/lib/api/getAllUsers";
 import ManageUsersTable from "@/components/dashboardUi/adminUi/ManageUsersTable";
+import { revalidatePath } from "next/cache";
 import React from "react";
 
-const page = () => {
-  const users = [
-    {
-      _id: "u1",
-      name: "Mehedi Hasan",
-      email: "mehedi@gmail.com",
-      role: "admin",
-      status: "active",
-    },
-    {
-      _id: "u2",
-      name: "Sakib Ahmed",
-      email: "sakib@gmail.com",
-      role: "member",
-      status: "active",
-    },
-    {
-      _id: "u3",
-      name: "Tanvir Hossain",
-      email: "tanvir@gmail.com",
-      role: "trainer",
-      status: "active",
-    },
-    {
-      _id: "u4",
-      name: "Asif Rahman",
-      email: "asif@gmail.com",
-      role: "member",
-      status: "blocked",
-    },
-    {
-      _id: "u5",
-      name: "Fahim Hasan",
-      email: "fahim@gmail.com",
-      role: "member",
-      status: "active",
-    },
-    {
-      _id: "u6",
-      name: "Nusrat Jahan",
-      email: "nusrat@gmail.com",
-      role: "trainer",
-      status: "blocked",
-    },
-    {
-      _id: "u7",
-      name: "Arafat Islam",
-      email: "arafat@gmail.com",
-      role: "member",
-      status: "active",
-    },
-    {
-      _id: "u8",
-      name: "Mahin Chowdhury",
-      email: "mahin@gmail.com",
-      role: "member",
-      status: "blocked",
-    },
-  ];
+const page = async () => {
+  const users = await getAllUsers();
+  const handleBlock = async (user) => {
+    "use server";
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${user._id}/block`,
+        {
+          method: "PATCH",
+        },
+      );
+
+      const data = await res.json();
+
+      if (data.modifiedCount > 0) {
+        revalidatePath("/dashboard/admin/manage-users");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleUnblock = async (user) => {
+    "use server";
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${user._id}/unblock`,
+        {
+          method: "PATCH",
+        },
+      );
+
+      const data = await res.json();
+
+      if (data.modifiedCount > 0) {
+        revalidatePath("/dashboard/admin/manage-users");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleMakeAdmin = async (user) => {
+    "use server";
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${user._id}/make-admin`,
+        {
+          method: "PATCH",
+        },
+      );
+
+      const data = await res.json();
+
+      if (data.modifiedCount > 0) {
+        revalidatePath("/dashboard/admin/manage-users");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
-      <ManageUsersTable users={users} />
+      <ManageUsersTable
+        users={users}
+        handleBlock={handleBlock}
+        handleUnblock={handleUnblock}
+        handleMakeAdmin={handleMakeAdmin}
+      />
     </div>
   );
 };

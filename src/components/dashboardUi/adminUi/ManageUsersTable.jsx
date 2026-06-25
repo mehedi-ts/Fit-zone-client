@@ -7,6 +7,7 @@ import {
   Users,
   Ban,
   CheckCircle,
+  Dumbbell,
 } from "lucide-react";
 
 export default function ManageUsersTable({
@@ -152,14 +153,14 @@ export default function ManageUsersTable({
                 {user.status === "blocked" ? (
                   <button
                     onClick={() => handleUnblock(user)}
-                    className="rounded-lg bg-green-100 px-3 py-2 text-xs font-medium text-green-700"
+                    className="flex w-28 items-center justify-center rounded-lg bg-green-100 px-3 py-2 text-xs font-medium text-green-700 hover:bg-green-200"
                   >
                     Unblock
                   </button>
                 ) : (
                   <button
                     onClick={() => handleBlock(user)}
-                    className="rounded-lg bg-red-100 px-3 py-2 text-xs font-medium text-red-700"
+                    className="flex w-28 items-center justify-center rounded-lg bg-red-100 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-200"
                   >
                     Block
                   </button>
@@ -168,7 +169,7 @@ export default function ManageUsersTable({
                 {user.role !== "admin" && (
                   <button
                     onClick={() => handleMakeAdmin(user)}
-                    className="rounded-lg bg-indigo-100 px-3 py-2 text-xs font-medium text-indigo-700"
+                    className="flex w-28 items-center justify-center rounded-lg bg-indigo-100 px-3 py-2 text-xs font-medium text-indigo-700 hover:bg-indigo-200"
                   >
                     Make Admin
                   </button>
@@ -191,17 +192,36 @@ function UserIcon() {
 }
 
 function RoleBadge({ role }) {
+  const roleConfig = {
+    admin: {
+      icon: <ShieldCheck size={14} />,
+      className: "bg-purple-100 text-purple-700",
+      label: "Admin",
+    },
+    trainer: {
+      icon: <Dumbbell size={14} />,
+      className: "bg-amber-100 text-amber-700",
+      label: "Trainer",
+    },
+    member: {
+      icon: <Shield size={14} />,
+      className: "bg-slate-100 text-slate-700",
+      label: "Member",
+    },
+  };
+
+  const config = roleConfig[role] || {
+    icon: <Shield size={14} />,
+    className: "bg-slate-100 text-slate-700",
+    label: role,
+  };
+
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-        role === "admin"
-          ? "bg-purple-100 text-purple-700"
-          : "bg-slate-100 text-slate-700"
-      }`}
+      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${config.className}`}
     >
-      {role === "admin" ? <ShieldCheck size={14} /> : <Shield size={14} />}
-
-      {role}
+      {config.icon}
+      {config.label}
     </span>
   );
 }
@@ -216,7 +236,6 @@ function StatusBadge({ status }) {
       }`}
     >
       {status === "blocked" ? <Ban size={14} /> : <CheckCircle size={14} />}
-
       {status}
     </span>
   );

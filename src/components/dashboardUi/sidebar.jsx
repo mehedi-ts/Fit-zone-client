@@ -92,7 +92,7 @@ export function Sidebar() {
       {
         icon: GraduationCap,
         label: "Applied Trainers",
-        href: "/dashboard/applied-trainers",
+        href: "/dashboard/admin/applied-trainers",
       },
       {
         icon: UserCog,
