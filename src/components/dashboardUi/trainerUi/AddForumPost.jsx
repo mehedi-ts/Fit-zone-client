@@ -62,6 +62,7 @@ export default function AddForumPost() {
       ...formData,
       authorId: user.id,
       authorName: user.name,
+      authorRole:user.role,
       authorEmail: user.email,
       authorRole: user.role,
       createdAt: new Date().toISOString(),

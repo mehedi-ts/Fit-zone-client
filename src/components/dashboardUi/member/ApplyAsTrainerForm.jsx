@@ -14,6 +14,7 @@ import {
 
 import { useUser } from "@/app/lib/getUserClient";
 import { ApplyAsTrainer } from "@/app/lib/actions/applyAsTrainer";
+import { toast } from "react-toastify";
 
 const SPECIALTY_OPTIONS = [
   { id: "yoga", label: "Yoga" },
@@ -77,8 +78,17 @@ export default function ApplyAsTrainerForm() {
 
       const result = await ApplyAsTrainer(trainerApplication);
 
-      if (result?.insertedId) {
-        router.refresh();
+      console.log(result)
+
+      if (result?.success) {
+        toast.success("Application submitted successfully!")
+        setTimeout(() => {
+          window.location.reload()
+        }, 1100);
+       
+      }
+      else {
+        toast.error("Failed to submit application!")
       }
     } catch (error) {
       console.log(error);

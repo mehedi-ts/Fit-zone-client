@@ -5,6 +5,7 @@ import React from "react";
 
 const page = async () => {
   const applications = await getPengingTrainerApplications();
+  console.log(applications,"this is applications")
 
   const handleApprove = async (application) => {
     "use server";

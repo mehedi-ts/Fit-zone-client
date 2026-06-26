@@ -3,14 +3,45 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Card, Avatar, Link, Button } from "@heroui/react";
-import { ArrowRight, ThumbsUp, ThumbsDown, MessageCircle } from "lucide-react";
+import {
+  ArrowRight,
+  ThumbsUp,
+  ThumbsDown,
+  MessageCircle,
+  ShieldCheck,
+  Dumbbell,
+} from "lucide-react";
 
 export default function ForumCard({ forum }) {
   const [likes, setLikes] = useState(245);
   const [dislikes, setDislikes] = useState(12);
 
-  const { _id, title, description, image, authorName, authorEmail, createdAt } =
-    forum;
+  const {
+    _id,
+    title,
+    description,
+    image,
+    authorName,
+    authorRole,
+    createdAt,
+  } = forum;
+
+  const role = authorRole?.toLowerCase();
+
+  const roleConfig = {
+    admin: {
+      label: "Admin",
+      icon: <ShieldCheck size={14} />,
+      className:
+        "bg-red-500/20 text-red-100 border border-red-300/30 backdrop-blur-md",
+    },
+    trainer: {
+      label: "Trainer",
+      icon: <Dumbbell size={14} />,
+      className:
+        "bg-emerald-500/20 text-emerald-100 border border-emerald-300/30 backdrop-blur-md",
+    },
+  };
 
   return (
     <Card className="max-w-sm w-full overflow-hidden p-0 hover:shadow-xl transition-all duration-300">
@@ -21,8 +52,18 @@ export default function ForumCard({ forum }) {
           alt={title || "Forum Post"}
           fill
           className="object-cover"
-          sizes="(max-width: 640px) 100vw, 384px"
+          sizes="(max-width:640px) 100vw, 384px"
         />
+
+        {/* Glass Role Badge */}
+        {roleConfig[role] && (
+          <div
+            className={`absolute top-4 left-4 z-10 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold shadow-lg ${roleConfig[role].className}`}
+          >
+            {roleConfig[role].icon}
+            {roleConfig[role].label}
+          </div>
+        )}
       </div>
 
       {/* Header */}
@@ -31,7 +72,7 @@ export default function ForumCard({ forum }) {
           Community Discussion
         </span>
 
-        <h2 className="text-xl font-bold mt-2 leading-tight">
+        <h2 className="mt-2 text-xl font-bold leading-tight">
           {title || "Untitled Discussion"}
         </h2>
       </div>
@@ -68,7 +109,7 @@ export default function ForumCard({ forum }) {
             isIconOnly
             size="sm"
             variant="flat"
-            onPress={() => setLikes(likes + 1)}
+            onPress={() => setLikes((prev) => prev + 1)}
           >
             <ThumbsUp size={16} />
           </Button>
@@ -79,7 +120,7 @@ export default function ForumCard({ forum }) {
             isIconOnly
             size="sm"
             variant="flat"
-            onPress={() => setDislikes(dislikes + 1)}
+            onPress={() => setDislikes((prev) => prev + 1)}
           >
             <ThumbsDown size={16} />
           </Button>
@@ -97,12 +138,12 @@ export default function ForumCard({ forum }) {
       <div className="px-5 py-5">
         <Link
           href={`/community/${_id}`}
-          className="text-orange-500 font-semibold flex items-center gap-2 group"
+          className="group flex items-center gap-2 font-semibold text-orange-500"
         >
           Read More
           <ArrowRight
             size={16}
-            className="transition-transform group-hover:translate-x-1"
+            className="transition-transform duration-200 group-hover:translate-x-1"
           />
         </Link>
       </div>
