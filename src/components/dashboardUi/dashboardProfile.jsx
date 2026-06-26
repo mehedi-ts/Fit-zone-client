@@ -33,6 +33,40 @@ const DashboardProfile = async () => {
     rating: "4.8 / 5",
     status: "Active",
   };
+  const roleBadgeStyles = {
+  ADMIN: {
+    className: "bg-red-50 text-red-700 border-red-200",
+    label: "ADMIN",
+  },
+  TRAINER: {
+    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    label: "TRAINER",
+  },
+  MEMBER: {
+    className: "bg-blue-50 text-blue-700 border-blue-200",
+    label: "MEMBER",
+  },
+
+  // যদি database-এ ছোট হাতের role থাকে
+  admin: {
+    className: "bg-red-50 text-red-700 border-red-200",
+    label: "ADMIN",
+  },
+  trainer: {
+    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    label: "TRAINER",
+  },
+  member: {
+    className: "bg-blue-50 text-blue-700 border-blue-200",
+    label: "MEMBER",
+  },
+};
+
+const currentRole =
+  roleBadgeStyles[userData?.role] || {
+    className: "bg-gray-50 text-gray-700 border-gray-200",
+    label: userData?.role || "UNKNOWN",
+  };
   return (
     <div className="w-full  mx-auto md:p-4 mt-6">
       <h2 className="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4">
@@ -53,10 +87,12 @@ const DashboardProfile = async () => {
               <h3 className="text-lg font-bold text-gray-900">
                 {userData.name}
               </h3>
-              <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-600 text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full border border-indigo-100">
-                <Shield className="w-2.5 h-2.5" />
-                {userData.role}
-              </span>
+              <span
+  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-bold tracking-wider uppercase ${currentRole.className}`}
+>
+  <Shield className="w-3 h-3" />
+  {currentRole.label}
+</span>
             </div>
             <div className="flex items-center gap-1.5 text-gray-500 text-sm">
               <Mail className="w-3.5 h-3.5" />

@@ -41,6 +41,7 @@ export async function POST(req) {
 
             product_data: {
               name: classInfo.className,
+              description: `Trainer: ${classInfo.trainerName}`,
             },
 
             unit_amount: Number(classInfo.price) * 100,

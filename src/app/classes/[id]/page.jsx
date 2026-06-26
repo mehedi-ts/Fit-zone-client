@@ -24,7 +24,6 @@ export default async function ClassDetailsPage({ params }) {
   console.log("this is userId", user?.id);
 
   const isBooked = user ? await checkBooked(classData._id, user.id) : false;
-  console.log("isBooked:", isBooked);
 
   return (
     <div className="min-h-screen py-10 px-4">

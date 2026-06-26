@@ -91,7 +91,7 @@ export default function BookingModal({
           <div>
             <h2 className="text-xl font-bold text-slate-900">Book Class</h2>
             <p className="mt-1 text-sm text-slate-500">
-              {className} · ৳{Number(price).toLocaleString("en-BD")}
+              {className} · ${Number(price).toLocaleString("en-BD")}
             </p>
           </div>
           <button

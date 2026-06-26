@@ -1,13 +1,15 @@
+// page.jsx
+import { getForumByForumId } from "@/app/lib/api/getForumByForumId";
 import FinalForumsDetails from "@/components/forums/FinalForumsDetails";
-import ForumComments from "@/components/forums/ForumComments";
-import ForumDetails from "@/components/forums/ForumsDetails";
 import React from "react";
 
-const page = () => {
+const page = async ({ params }) => {
+  const { id } = await params;
+  const data = await getForumByForumId(id);
+
   return (
     <div>
-      <FinalForumsDetails />
-      <ForumComments></ForumComments>
+      <FinalForumsDetails post={data} />
     </div>
   );
 };

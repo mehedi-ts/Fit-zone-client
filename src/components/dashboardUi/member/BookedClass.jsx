@@ -1,12 +1,19 @@
 "use client";
 
-import { CalendarX2, User, Clock, ArrowRight, Dumbbell } from "lucide-react";
+import Link from "next/link";
+import {
+  CalendarX2,
+  User,
+  Clock,
+  ArrowRight,
+  Dumbbell,
+} from "lucide-react";
 
 export default function BookedClass({ bookingData = [] }) {
   return (
     <div className="w-full">
       {/* Desktop Table */}
-      <div className="hidden overflow-hidden rounded-2xl border bg-white shadow-sm md:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b bg-slate-50">
@@ -43,7 +50,7 @@ export default function BookedClass({ bookingData = [] }) {
               bookingData.map((booking) => (
                 <tr
                   key={booking._id}
-                  className="border-b transition hover:bg-slate-50"
+                  className="border-b transition hover:bg-brand/5"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -84,14 +91,14 @@ export default function BookedClass({ bookingData = [] }) {
       {/* Mobile Cards */}
       <div className="space-y-4 md:hidden">
         {bookingData.length === 0 ? (
-          <div className="rounded-2xl border bg-white">
+          <div className="rounded-2xl border border-slate-200 bg-white">
             <EmptyState />
           </div>
         ) : (
           bookingData.map((booking) => (
             <div
               key={booking._id}
-              className="rounded-2xl border bg-white p-4 shadow-sm"
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
             >
               <div className="mb-5 flex items-center gap-3">
                 <IconBox />
@@ -113,7 +120,8 @@ export default function BookedClass({ bookingData = [] }) {
                 </div>
 
                 <Info icon={<Clock size={16} />}>
-                  {booking.classInfo?.startTime} • {booking.classInfo?.duration}
+                  {booking.classInfo?.startTime} •{" "}
+                  {booking.classInfo?.duration}
                 </Info>
               </div>
 
@@ -131,7 +139,9 @@ export default function BookedClass({ bookingData = [] }) {
 function Schedule({ days }) {
   if (!days?.length) {
     return (
-      <span className="text-sm text-slate-400">No schedule available</span>
+      <span className="text-sm text-slate-400">
+        No schedule available
+      </span>
     );
   }
 
@@ -140,7 +150,7 @@ function Schedule({ days }) {
       {days.map((day, index) => (
         <span
           key={index}
-          className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600"
+          className="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand"
         >
           {day.toUpperCase()}
         </span>
@@ -152,11 +162,13 @@ function Schedule({ days }) {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50">
-        <CalendarX2 className="h-7 w-7 text-indigo-500" />
+      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand/10">
+        <CalendarX2 className="h-7 w-7 text-brand" />
       </div>
 
-      <p className="text-sm font-medium">No booked classes found</p>
+      <p className="text-sm font-medium text-brand-dark">
+        No booked classes found
+      </p>
 
       <p className="text-xs text-slate-400">
         Your booked classes will appear here.
@@ -167,8 +179,8 @@ function EmptyState() {
 
 function IconBox() {
   return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
-      <Dumbbell className="h-5 w-5 text-indigo-500" />
+    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10">
+      <Dumbbell className="h-5 w-5 text-brand" />
     </div>
   );
 }
@@ -184,12 +196,12 @@ function Info({ icon, children }) {
 
 function ActionButton({ booking }) {
   return (
-    <button
-      onClick={() => console.log(booking)}
-      className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-indigo-700 md:w-auto"
+    <Link
+      href={`/classes/${booking.classId}`}
+      className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2 text-xs font-medium text-white transition hover:opacity-90 md:w-auto"
     >
       View Details
       <ArrowRight className="h-4 w-4" />
-    </button>
+    </Link>
   );
 }

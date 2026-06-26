@@ -20,6 +20,7 @@ import {
 
 import { useUser } from "@/app/lib/getUserClient";
 import BookingModal from "./BookongModal";
+import { toast } from "react-toastify";
 
 const DAY_LABELS = {
   sun: "Sun",
@@ -132,6 +133,7 @@ export default function ClassDetails({ classData, isBooked }) {
       });
 
       setIsFavorite(true);
+      toast.success("Successfully added to your favorites!");
     }
   };
 
@@ -275,16 +277,20 @@ export default function ClassDetails({ classData, isBooked }) {
               <div className="leading-tight">
                 <p className="text-xs text-slate-400">Class Fee</p>
                 <p className="text-2xl font-bold text-brand">
-                  ৳{Number(price).toLocaleString("en-BD")}
+                  ${Number(price).toLocaleString("en-BD")}
                 </p>
               </div>
             </div>
 
             {alreadyBooked ? (
-              <span className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 font-medium px-6 py-3 rounded-xl border border-emerald-200">
+              <button
+                type="button"
+                onClick={() => toast.info("This class is already booked.")}
+                className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 font-medium px-6 py-3 rounded-xl border border-emerald-200"
+              >
                 <Check size={16} />
                 Already Booked
-              </span>
+              </button>
             ) : (
               <button
                 type="button"
