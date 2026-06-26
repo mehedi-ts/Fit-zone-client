@@ -63,18 +63,23 @@ export default function AddForumPost() {
       authorId: user.id,
       authorName: user.name,
       authorEmail: user.email,
+      authorRole: user.role,
       createdAt: new Date().toISOString(),
     };
 
     try {
-      // addForum throws on failure, so no need to inspect the
-      // result shape here — reaching this line means it succeeded.
       await addForum(finalPayload);
 
       console.log("Post published successfully:", finalPayload);
 
       alert("Post published successfully!");
-      router.push("/dashboard/trainer/my-forum");
+
+      const redirectPath =
+        user.role === "admin"
+          ? "/dashboard/admin/forum-post-manage"
+          : "/dashboard/trainer/my-forum";
+
+      router.push(redirectPath);
     } catch (error) {
       console.error("Failed to publish post:", error);
       alert(
@@ -86,7 +91,6 @@ export default function AddForumPost() {
     }
   };
 
-  // Guard: wait for the user session to resolve before rendering the form
   if (!user) {
     return (
       <div className="min-h-screen flex justify-center items-center py-10 px-4">
@@ -110,7 +114,7 @@ export default function AddForumPost() {
 
         <Card.Content className="p-0">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Section: Post Details */}
+            {/* Title */}
             <TextField
               isRequired
               name="title"
@@ -129,7 +133,7 @@ export default function AddForumPost() {
               />
             </TextField>
 
-            {/* Image Upload Field */}
+            {/* Image Upload */}
             <div className="w-full flex flex-col gap-1">
               <Label className="text-sm font-medium text-slate-700 block">
                 Post Image
@@ -168,6 +172,7 @@ export default function AddForumPost() {
               </div>
             </div>
 
+            {/* Description */}
             <TextField
               isRequired
               name="description"
@@ -187,6 +192,7 @@ export default function AddForumPost() {
               />
             </TextField>
 
+            {/* Buttons */}
             <div className="flex items-center justify-end gap-3 pt-4">
               <Button
                 type="button"

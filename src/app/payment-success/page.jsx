@@ -33,6 +33,7 @@ export default async function Success({ searchParams }) {
       name: session.metadata.name,
       email: session.metadata.email,
       phone: session.metadata.phone,
+      amount: session.amount_total / 100,
 
       stripeSessionId: session.id,
       paymentIntentId: session.payment_intent?.id,
