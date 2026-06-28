@@ -16,6 +16,7 @@ import {
 import { imageUploader } from "@/app/lib/imageUpload";
 import { addClass } from "@/app/lib/actions/addClass";
 import { useUser } from "@/app/lib/getUserClient";
+import { toast } from "react-toastify";
 
 export default function AddClassForm() {
   const user = useUser();
@@ -129,18 +130,15 @@ export default function AddClassForm() {
     try {
       const result = await addClass(finalPayload);
 
-      if (!result || result.error) {
-        throw new Error(result?.error || "Failed to create class.");
+      if (!result.success) {
+        throw new Error(result.message || "Class not created");
       }
 
-      alert("Class created successfully!");
+      toast.success("Class created successfully!");
       router.push("/dashboard/trainer/my-classes");
     } catch (error) {
       console.error("Failed to create class:", error);
-      alert(
-        error?.message ||
-          "Something went wrong while creating the class. Please try again.",
-      );
+      toast.error(error.message || "Something went wrong");
     } finally {
       setIsSubmitting(false);
     }

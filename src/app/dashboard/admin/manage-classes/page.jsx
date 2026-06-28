@@ -1,4 +1,5 @@
 import { getAllClasses } from "@/app/lib/api/getAllClasses";
+import { getTokenServer } from "@/app/lib/getTokenServer";
 import ManageClassesTable from "@/components/dashboardUi/adminUi/ManageClassesTable";
 import { revalidatePath } from "next/cache";
 import React from "react";
@@ -8,11 +9,16 @@ const page = async () => {
 
   const handleApprove = async (cls) => {
     "use server";
+    const token = await getTokenServer();
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/classes/${cls._id}/approve`,
         {
           method: "PATCH",
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
 
@@ -28,11 +34,15 @@ const page = async () => {
 
   const handleReject = async (cls) => {
     "use server";
+    const token = await getTokenServer();
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/classes/${cls._id}/reject`,
         {
           method: "PATCH",
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
 
@@ -48,11 +58,15 @@ const page = async () => {
 
   const handleDelete = async (cls) => {
     "use server";
+    const token = await getTokenServer();
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/classes/${cls._id}`,
         {
           method: "DELETE",
+           headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
 
