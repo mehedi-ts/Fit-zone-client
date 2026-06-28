@@ -21,6 +21,7 @@ import {
 import { useUser } from "@/app/lib/getUserClient";
 import BookingModal from "./BookongModal";
 import { toast } from "react-toastify";
+import { getTokenClient } from "@/app/lib/getTokenClient";
 
 const DAY_LABELS = {
   sun: "Sun",
@@ -64,13 +65,13 @@ function initials(name) {
     .toUpperCase();
 }
 
-export default function ClassDetails({ classData, isBooked }) {
+export default function ClassDetails({ classData, isBooked, isFavorited }) {
   const user = useUser();
   console.log("this is details page user", user);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [alreadyBooked, setAlreadyBooked] = useState(isBooked);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(isFavorited);
 
   const {
     _id,
@@ -102,35 +103,49 @@ export default function ClassDetails({ classData, isBooked }) {
     if (!user?.id) {
       return;
     }
+    const token = await getTokenClient();
 
     if (isFavorite) {
-      await fetch(`${SERVER_URL}/favorites`, {
+      const res = await fetch(`${SERVER_URL}/favorites`, {
         method: "DELETE",
-
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
         },
-
         body: JSON.stringify({
           userId: user.id,
           classId: _id,
         }),
       });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast.error(data.message || "Failed to remove favorite");
+        return;
+      }
 
       setIsFavorite(false);
+      toast.success(data.message);
     } else {
-      await fetch(`${SERVER_URL}/favorites`, {
+      const res = await fetch(`${SERVER_URL}/favorites`, {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
         },
-
         body: JSON.stringify({
           userId: user.id,
           classId: _id,
         }),
       });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast.error(data.message || "Failed to add favorite");
+        return;
+      }
 
       setIsFavorite(true);
       toast.success("Successfully added to your favorites!");

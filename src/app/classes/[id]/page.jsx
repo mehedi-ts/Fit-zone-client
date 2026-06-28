@@ -4,6 +4,7 @@ import { getClassById } from "@/app/lib/api/getClassById";
 import ClassDetails from "@/components/allClass/ClassDetails";
 import { getUser } from "@/app/lib/getUser";
 import { checkBooked } from "@/app/lib/api/chackBooked";
+import { checkFavorited } from "@/app/lib/api/checkFavorited";
 
 export default async function ClassDetailsPage({ params }) {
   const { id } = await params;
@@ -24,11 +25,18 @@ export default async function ClassDetailsPage({ params }) {
   console.log("this is userId", user?.id);
 
   const isBooked = user ? await checkBooked(classData._id, user.id) : false;
+  const isFavorited = user
+    ? await checkFavorited(classData._id, user.id)
+    : false;
 
   return (
     <div className="min-h-screen py-10 px-4">
       <div className="w-full max-w-5xl mx-auto">
-        <ClassDetails classData={classData} isBooked={isBooked} />
+        <ClassDetails
+          classData={classData}
+          isBooked={isBooked}
+          isFavorited={isFavorited}
+        />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { HeartCrack, ImageIcon } from "lucide-react";
 import { useUser } from "@/app/lib/getUserClient";
+import { getTokenClient } from "@/app/lib/getTokenClient";
 
 export default function FavoriteClassesTable({ favoriteClasses = [] }) {
   const router = useRouter();
@@ -12,10 +13,14 @@ export default function FavoriteClassesTable({ favoriteClasses = [] }) {
   const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
   const handleDelete = async (classId) => {
+    const token = await getTokenClient();
     try {
       const res = await fetch(`${SERVER_URL}/favorites`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ userId, classId }),
       });
 
