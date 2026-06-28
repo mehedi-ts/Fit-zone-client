@@ -10,6 +10,7 @@ import {
   HeartPulse,
   Activity,
   ImageOff,
+  Users,
 } from "lucide-react";
 
 export default function ClassCard({
@@ -21,6 +22,7 @@ export default function ClassCard({
   level,
   price,
   category,
+  bookingCount,
 }) {
   const getCategoryStyle = () => {
     switch (category?.toLowerCase()) {
@@ -93,6 +95,14 @@ export default function ClassCard({
             {category}
           </span>
         </div>
+
+        {/* Booking count badge */}
+        <div className="absolute right-4 top-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-semibold text-default-700 shadow-sm">
+            <Users size={14} />
+            {bookingCount ?? 0} booked
+          </span>
+        </div>
       </div>
 
       {/* Content */}
@@ -123,7 +133,10 @@ export default function ClassCard({
             </h4>
           </div>
           <Link href={`/classes/${_id}`}>
-            <Button color="primary" radius="full">
+            <Button
+              radius="full"
+              className="bg-[var(--color-brand)] text-white font-medium px-5 hover:opacity-90 transition-opacity"
+            >
               Details
             </Button>
           </Link>

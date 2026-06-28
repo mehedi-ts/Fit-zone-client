@@ -1,11 +1,12 @@
-import { getAllClasses } from "@/app/lib/api/getAllClasses";
+import { getAdminAllClasses } from "@/app/lib/api/getAdminAllClasses";
+
 import { getTokenServer } from "@/app/lib/getTokenServer";
 import ManageClassesTable from "@/components/dashboardUi/adminUi/ManageClassesTable";
 import { revalidatePath } from "next/cache";
 import React from "react";
 
 const page = async () => {
-  const classes = await getAllClasses();
+  const classes = await getAdminAllClasses();
 
   const handleApprove = async (cls) => {
     "use server";

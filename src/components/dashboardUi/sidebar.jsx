@@ -17,15 +17,23 @@ import {
   Dumbbell,
   MessageSquarePlus,
   ShieldCheck,
+  Home,
+  LogOut,
+  MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { authClient } from "@/app/lib/auth-client";
 
 export function Sidebar() {
   const userData = useUser();
-  console.log("User Data:", userData);
-  const [active, setActive] = useState("Home");
+  const pathname = usePathname();
+  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
   const dashboardItems = {
     member: [
       {
@@ -124,37 +132,63 @@ export function Sidebar() {
   const role = userData?.role || "member"; // Default to 'member' if role is not available
   const navMain = dashboardItems[role];
 
-  const NavItem = ({ icon: Icon, label, badge, href }) => (
-    <Link href={href}>
-      <button
-        type="button"
-        onClick={() => {
-          setActive(label);
-          setDrawerOpen(false);
-        }}
-        className={`
-        group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm
-        transition-all duration-150
-        ${
-          active === label
-            ? "bg-[rgba(255,107,53,0.1)] font-medium text-[#ff6b35]"
-            : "font-normal text-default-500 hover:bg-default-100 hover:text-foreground"
-        }
-      `}
-      >
-        {active === label && (
-          <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm bg-[#ff6b35]" />
-        )}
-        <Icon className="size-[18px] shrink-0" />
-        <span>{label}</span>
-        {badge && (
-          <span className="ml-auto rounded-full bg-[#ff6b35] px-1.5 py-px text-[10px] font-medium leading-4 text-white">
-            {badge}
-          </span>
-        )}
-      </button>
-    </Link>
-  );
+  // Close the profile menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen]);
+
+  const handleLogout = async () => {
+    setMenuOpen(false);
+    await authClient.signOut();
+    router.push("/");
+  };
+
+  // Exact match for the overview/root route, prefix match for nested routes
+  const isItemActive = (href) => {
+    const base = `/dashboard/${role}`;
+    if (href === base) return pathname === base;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  const NavItem = ({ icon: Icon, label, badge, href }) => {
+    const isActive = isItemActive(href);
+
+    return (
+      <Link href={href}>
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(false)}
+          className={`
+          group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm
+          transition-all duration-150
+          ${
+            isActive
+              ? "bg-[rgba(255,107,53,0.1)] font-medium text-[#ff6b35]"
+              : "font-normal text-default-500 hover:bg-default-100 hover:text-foreground"
+          }
+        `}
+        >
+          {isActive && (
+            <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-sm bg-[#ff6b35]" />
+          )}
+          <Icon className="size-[18px] shrink-0" />
+          <span>{label}</span>
+          {badge && (
+            <span className="ml-auto rounded-full bg-[#ff6b35] px-1.5 py-px text-[10px] font-medium leading-4 text-white">
+              {badge}
+            </span>
+          )}
+        </button>
+      </Link>
+    );
+  };
 
   const navContent = (
     <nav className="flex flex-col gap-0.5">
@@ -189,17 +223,44 @@ export function Sidebar() {
   );
 
   const userBlock = (
-    <div className="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-default-100 cursor-pointer">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand to-[#ff9a6c] text-[11px] font-medium text-white">
-        {userData?.name?.slice(0, 2).toUpperCase() || "RK"}
+    <div ref={menuRef} className="relative">
+      <div
+        onClick={() => setMenuOpen((v) => !v)}
+        className="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-default-100 cursor-pointer"
+      >
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand to-[#ff9a6c] text-[11px] font-medium text-white">
+          {userData?.name?.slice(0, 2).toUpperCase() || "RK"}
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-foreground">
+            {userData?.name || ""}
+          </p>
+          <p className="text-[11px] text-default-400">{userData?.role || ""}</p>
+        </div>
+        <MoreHorizontal className="ml-auto size-4 text-default-300" />
       </div>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-foreground">
-          {userData?.name || ""}
-        </p>
-        <p className="text-[11px] text-default-400">{userData?.role || ""}</p>
-      </div>
-      <span className="ml-auto text-default-300">···</span>
+
+      {/* Popover menu */}
+      {menuOpen && (
+        <div className="absolute bottom-full left-0 z-50 mb-2 w-full overflow-hidden rounded-xl border border-default-100 bg-background shadow-lg">
+          <Link
+            href="/"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-default-600 transition-colors hover:bg-default-100 hover:text-foreground"
+          >
+            <Home className="size-[16px]" />
+            Back to Home
+          </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-2.5 border-t border-default-100 px-3.5 py-2.5 text-sm text-red-500 transition-colors hover:bg-red-50"
+          >
+            <LogOut className="size-[16px]" />
+            Logout
+          </button>
+        </div>
+      )}
     </div>
   );
 

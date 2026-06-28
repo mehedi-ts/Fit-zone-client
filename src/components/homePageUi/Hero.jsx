@@ -106,7 +106,7 @@ export default function Hero() {
             </Link>
 
             {/* Secondary */}
-            <button className="group flex items-center justify-center gap-2.5 text-[13px] font-semibold text-white/70 rounded-full px-6 py-3.5 sm:px-7 sm:py-4 border border-white/15 backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:text-white hover:bg-white/8 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.97] active:translate-y-0 cursor-pointer tracking-wide">
+            {/* <button className="group flex items-center justify-center gap-2.5 text-[13px] font-semibold text-white/70 rounded-full px-6 py-3.5 sm:px-7 sm:py-4 border border-white/15 backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:text-white hover:bg-white/8 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.97] active:translate-y-0 cursor-pointer tracking-wide">
               <span
                 className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white/25 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:border-white/50"
                 style={{ backgroundColor: "rgba(255,255,255,0.05)" }}
@@ -114,7 +114,7 @@ export default function Hero() {
                 <Play className="w-2.5 h-2.5 fill-white ml-0.5" />
               </span>
               <span>Become a Trainer</span>
-            </button>
+            </button> */}
           </div>
 
           {/* Social Proof */}

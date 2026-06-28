@@ -1,6 +1,7 @@
 // page.jsx
 import { getForumByForumId } from "@/app/lib/api/getForumByForumId";
-import FinalForumsDetails from "@/components/forums/FinalForumsDetails";
+import FinalForumsDetails from "@/components/forums/Finalforumsdetails";
+
 import React from "react";
 
 const page = async ({ params }) => {

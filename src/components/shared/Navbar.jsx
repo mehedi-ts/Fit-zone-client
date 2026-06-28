@@ -26,8 +26,6 @@ const NAV_ITEMS = [
   { name: "Community Forum", href: "/community", icon: MessageCircle },
 ];
 
-// Replace with real auth state (e.g. useSession / context) when wiring this up.
-
 export default function Navbar() {
   const { data: session, error } = authClient.useSession();
   const user = session?.user;
@@ -38,6 +36,8 @@ export default function Navbar() {
 
   const [open, setOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
+
+  const dashboardHref = user?.role ? `/dashboard/${user.role}` : "/dashboard";
 
   const goTo = (href) => {
     router.push(href);
@@ -131,6 +131,32 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
+                {/* Dashboard — distinct pill button, separated from regular nav links */}
+                <Link
+                  href={dashboardHref}
+                  className={`
+                  flex
+                  items-center
+                  gap-1.5
+                  rounded-full
+                  px-4
+                  py-2
+                  text-sm
+                  font-semibold
+                  border
+                  transition-all
+                  duration-200
+                  ${
+                    isActive("/dashboard")
+                      ? "bg-brand text-white border-brand shadow-sm"
+                      : "bg-brand/10 text-brand border-brand/20 hover:bg-brand/15"
+                  }
+                  `}
+                >
+                  <LayoutDashboard size={16} />
+                  Dashboard
+                </Link>
+
                 {/* Notification */}
                 <Button
                   variant="light"
@@ -217,7 +243,7 @@ export default function Navbar() {
                     <Dropdown.Menu>
                       <Dropdown.Item
                         id="dashboard"
-                        onAction={() => goTo(`/dashboard/${user.role}`)}
+                        onAction={() => goTo(dashboardHref)}
                       >
                         <div className="flex items-center gap-3">
                           <LayoutDashboard size={18} />
@@ -367,7 +393,7 @@ export default function Navbar() {
 
                       {user && (
                         <button
-                          onClick={() => goTo(`/dashboard/${user.role}`)}
+                          onClick={() => goTo(dashboardHref)}
                           aria-current={
                             isActive("/dashboard") ? "page" : undefined
                           }

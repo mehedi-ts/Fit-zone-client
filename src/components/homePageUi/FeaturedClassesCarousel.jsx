@@ -115,6 +115,7 @@ export default function FeaturedClasses() {
                   level={item.level}
                   price={item.price}
                   category={item.category}
+                  bookingCount={item.bookingCount}
                 />
               </div>
             ))}

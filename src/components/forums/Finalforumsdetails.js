@@ -1,14 +1,26 @@
-// FinalForumsDetails.jsx
 import Image from "next/image";
 import { ShieldCheck, Dumbbell } from "lucide-react";
+import { getUser } from "@/app/lib/getUser";
+import { getForumLikes } from "@/app/lib/api/getForumLikes";
+import { getForumComments } from "@/app/lib/api/getForumComments";
+import LikeDislike from "./LikeDislike";
+import Comment from "./Comment";
 
-export default function FinalForumsDetailss({ post }) {
+
+export default async function FinalForumsDetails({ post }) {
   if (!post)
     return (
       <p className="text-center py-10 text-gray-400">
         Post not found.
       </p>
     );
+
+  const user = await getUser();
+
+  const [likes, comments] = await Promise.all([
+    getForumLikes(post._id, user?.id || ""),
+    getForumComments(post._id),
+  ]);
 
   const formattedDate = new Date(post.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -92,6 +104,16 @@ export default function FinalForumsDetailss({ post }) {
       <p className="text-base text-gray-600 leading-7">
         {post.description}
       </p>
+
+      {/* Like / Dislike */}
+      <div className="mt-6 pt-6 border-t border-gray-100">
+        <LikeDislike forumId={post._id} user={user} initialLikes={likes} />
+      </div>
+
+      {/* Comments */}
+      <div className="mt-8 pt-6 border-t border-gray-100">
+        <Comment forumId={post._id} user={user} initialComments={comments} />
+      </div>
     </div>
   );
 }

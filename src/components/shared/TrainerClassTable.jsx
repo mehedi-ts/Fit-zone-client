@@ -6,9 +6,12 @@ import { Table, Button, Modal, useOverlayState, Input } from "@heroui/react";
 
 const STATUS_STYLES = {
   Active: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  approved: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
   Draft: "bg-stone-100 text-stone-600 ring-stone-500/20",
+  pending: "bg-amber-50 text-amber-700 ring-amber-600/20",
   Full: "bg-amber-50 text-amber-700 ring-amber-600/20",
   Cancelled: "bg-rose-50 text-rose-700 ring-rose-600/20",
+  rejected: "bg-rose-50 text-rose-700 ring-rose-600/20",
 };
 
 const DIFFICULTY_DOT = {
@@ -17,35 +20,49 @@ const DIFFICULTY_DOT = {
   advanced: "bg-rose-500",
 };
 
+const FALLBACK_IMAGE = "/placeholder-class.png"; // public ফোল্ডারে একটা প্লেসহোল্ডার ছবি রাখবেন
+
 /**
- * TrainerClassTable
- *
- * Pure, prop-driven component — load your own data and pass it in via
- * `classes`. No mock/sample data is bundled here.
- *
- * Expected shape per class:
- * {
- *   id: string,
- *   className: string,
- *   image: string,
- *   difficultyLevel: "Beginner" | "Intermediate" | "Advanced",
- *   duration: string,        // e.g. "60 mins"
- *   schedule: string,        // e.g. "Mon, Wed • 08:00 AM"
- *   price: number,
- *   status: "Active" | "Draft" | "Full" | "Cancelled",
- *   students: { name: string, email: string }[],
- * }
- *
- * Callbacks (all optional — component manages its own modal open/close
- * state regardless; these just let you hook in real API calls):
- *   onUpdateClass(updatedClass)
- *   onDeleteClass(classId)
+ * ClassThumbnail — handles missing/broken images gracefully.
+ * Falls back to an icon tile if no image URL exists or it fails to load.
  */
-export function TrainerClassTable({ trainerClasses }) {
+function ClassThumbnail({ src, alt, size = 44, sizeClass = "w-11 h-11" }) {
+  const [errored, setErrored] = useState(false);
+  const hasValidSrc = src && typeof src === "string" && src.trim() !== "";
+
+  if (!hasValidSrc || errored) {
+    return (
+      <div
+        className={`relative ${sizeClass} shrink-0 rounded-xl overflow-hidden ring-1 ring-stone-200/80 bg-stone-100 flex items-center justify-center`}
+      >
+        <DumbbellIcon className="text-stone-400" />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`relative ${sizeClass} shrink-0 rounded-xl overflow-hidden ring-1 ring-stone-200/80`}
+    >
+      <Image
+        src={src}
+        alt={alt || "Class image"}
+        fill
+        sizes={`${size}px`}
+        className="object-cover"
+        onError={() => setErrored(true)}
+      />
+    </div>
+  );
+}
+
+export function TrainerClassTable({ trainerClasses, onUpdateClass, onDeleteClass }) {
   const classes = trainerClasses || [];
 
   const [activeClass, setActiveClass] = useState(null);
   const [editForm, setEditForm] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const studentsModal = useOverlayState();
   const updateModal = useOverlayState();
@@ -55,7 +72,7 @@ export function TrainerClassTable({ trainerClasses }) {
     setActiveClass(cls);
     studentsModal.open();
   };
-  console.log("TrainerClassTable received classes:", trainerClasses);
+
   const openUpdate = (cls) => {
     setActiveClass(cls);
     setEditForm({ ...cls });
@@ -67,14 +84,26 @@ export function TrainerClassTable({ trainerClasses }) {
     deleteModal.open();
   };
 
-  const handleSaveUpdate = () => {
-    onUpdateClass?.(editForm);
-    updateModal.close();
+  const handleSaveUpdate = async () => {
+    if (!editForm) return;
+    setIsSaving(true);
+    try {
+      await onUpdateClass?.(editForm);
+      updateModal.close();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleConfirmDelete = () => {
-    onDeleteClass?.(activeClass.id);
-    deleteModal.close();
+  const handleConfirmDelete = async () => {
+    if (!activeClass) return;
+    setIsDeleting(true);
+    try {
+      await onDeleteClass?.(activeClass._id);
+      deleteModal.close();
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -137,20 +166,17 @@ export function TrainerClassTable({ trainerClasses }) {
               >
                 {(cls) => (
                   <Table.Row
-                    id={cls._id}
+                    id={String(cls._id)}
                     className="group hover:bg-stone-50/60 transition-colors duration-150 border-b border-stone-100 last:border-0"
                   >
                     <Table.Cell className="py-3">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="relative w-11 h-11 shrink-0 rounded-xl overflow-hidden ring-1 ring-stone-200/80">
-                          <Image
-                            src={cls.image}
-                            alt={cls.className}
-                            fill
-                            sizes="44px"
-                            className="object-cover"
-                          />
-                        </div>
+                        <ClassThumbnail
+                          src={cls.image}
+                          alt={cls.className}
+                          size={44}
+                          sizeClass="w-11 h-11"
+                        />
                         <div className="min-w-0">
                           <p className="font-medium text-stone-800 text-[14px] truncate">
                             {cls.className}
@@ -160,12 +186,16 @@ export function TrainerClassTable({ trainerClasses }) {
                               className={[
                                 "w-1.5 h-1.5 rounded-full shrink-0",
                                 DIFFICULTY_DOT[
-                                  cls.difficultyLevel?.toLowerCase()
+                                  cls.difficultyLevel?.toLowerCase() ||
+                                    cls.difficulty?.toLowerCase()
                                 ] || "bg-stone-400",
                               ].join(" ")}
                             />
                             <span className="text-[12px] text-stone-500 truncate">
-                              {cls.difficultyLevel} · {cls.schedule}
+                              {cls.difficultyLevel || cls.difficulty} ·{" "}
+                              {Array.isArray(cls.schedule)
+                                ? cls.schedule.join(", ")
+                                : cls.schedule}
                             </span>
                           </div>
                         </div>
@@ -187,7 +217,7 @@ export function TrainerClassTable({ trainerClasses }) {
                     <Table.Cell>
                       <span
                         className={[
-                          "inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-medium ring-1 ring-inset",
+                          "inline-flex items-center px-2.5 py-1 rounded-full text-[12px] font-medium ring-1 ring-inset capitalize",
                           STATUS_STYLES[cls.status] || STATUS_STYLES.Draft,
                         ].join(" ")}
                       >
@@ -253,15 +283,12 @@ export function TrainerClassTable({ trainerClasses }) {
                 className="rounded-2xl border border-stone-200/80 p-3.5 bg-white"
               >
                 <div className="flex items-start gap-3">
-                  <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden ring-1 ring-stone-200/80">
-                    <Image
-                      src={cls.image}
-                      alt={cls.className}
-                      fill
-                      sizes="48px"
-                      className="object-cover"
-                    />
-                  </div>
+                  <ClassThumbnail
+                    src={cls.image}
+                    alt={cls.className}
+                    size={48}
+                    sizeClass="w-12 h-12"
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-medium text-stone-800 text-[14px] leading-snug">
@@ -269,7 +296,7 @@ export function TrainerClassTable({ trainerClasses }) {
                       </p>
                       <span
                         className={[
-                          "shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ring-1 ring-inset",
+                          "shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ring-1 ring-inset capitalize",
                           STATUS_STYLES[cls.status] || STATUS_STYLES.Draft,
                         ].join(" ")}
                       >
@@ -280,12 +307,17 @@ export function TrainerClassTable({ trainerClasses }) {
                       <span
                         className={[
                           "w-1.5 h-1.5 rounded-full shrink-0",
-                          DIFFICULTY_DOT[cls.difficultyLevel?.toLowerCase()] ||
-                            "bg-stone-400",
+                          DIFFICULTY_DOT[
+                            cls.difficultyLevel?.toLowerCase() ||
+                              cls.difficulty?.toLowerCase()
+                          ] || "bg-stone-400",
                         ].join(" ")}
                       />
                       <span className="text-[12px] text-stone-500 truncate">
-                        {cls.difficultyLevel} · {cls.schedule}
+                        {cls.difficultyLevel || cls.difficulty} ·{" "}
+                        {Array.isArray(cls.schedule)
+                          ? cls.schedule.join(", ")
+                          : cls.schedule}
                       </span>
                     </div>
                   </div>
@@ -378,7 +410,7 @@ export function TrainerClassTable({ trainerClasses }) {
                           >
                             <div className="w-8 h-8 rounded-full bg-stone-100 text-stone-600 text-[12px] font-semibold flex items-center justify-center shrink-0">
                               {s.name
-                                .split(" ")
+                                ?.split(" ")
                                 .map((p) => p[0])
                                 .slice(0, 2)
                                 .join("")}
@@ -469,7 +501,11 @@ export function TrainerClassTable({ trainerClasses }) {
                         </div>
                         <Input
                           label="Schedule"
-                          value={editForm.schedule}
+                          value={
+                            Array.isArray(editForm.schedule)
+                              ? editForm.schedule.join(", ")
+                              : editForm.schedule
+                          }
                           onChange={(e) =>
                             setEditForm({
                               ...editForm,
@@ -480,7 +516,7 @@ export function TrainerClassTable({ trainerClasses }) {
                         <div className="grid grid-cols-2 gap-4">
                           <Input
                             label="Difficulty"
-                            value={editForm.difficultyLevel}
+                            value={editForm.difficultyLevel || editForm.difficulty}
                             onChange={(e) =>
                               setEditForm({
                                 ...editForm,
@@ -507,18 +543,17 @@ export function TrainerClassTable({ trainerClasses }) {
                       variant="flat"
                       onPress={close}
                       className="rounded-lg"
+                      isDisabled={isSaving}
                     >
                       Cancel
                     </Button>
                     <Button
                       color="primary"
-                      onPress={() => {
-                        handleSaveUpdate();
-                        close();
-                      }}
+                      onPress={handleSaveUpdate}
                       className="rounded-lg"
+                      isDisabled={isSaving}
                     >
-                      Save changes
+                      {isSaving ? "Saving..." : "Save changes"}
                     </Button>
                   </Modal.Footer>
                 </>
@@ -557,18 +592,17 @@ export function TrainerClassTable({ trainerClasses }) {
                       variant="flat"
                       onPress={close}
                       className="rounded-lg"
+                      isDisabled={isDeleting}
                     >
                       Cancel
                     </Button>
                     <Button
                       color="danger"
-                      onPress={() => {
-                        handleConfirmDelete();
-                        close();
-                      }}
+                      onPress={handleConfirmDelete}
                       className="rounded-lg"
+                      isDisabled={isDeleting}
                     >
-                      Delete
+                      {isDeleting ? "Deleting..." : "Delete"}
                     </Button>
                   </Modal.Footer>
                 </>
@@ -636,7 +670,7 @@ function EmptyClassesState() {
   );
 }
 
-function DumbbellIcon() {
+function DumbbellIcon({ className = "" }) {
   return (
     <svg
       width="20"
@@ -647,6 +681,7 @@ function DumbbellIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className={className}
     >
       <path d="M6.5 6.5 17.5 17.5" />
       <path d="M21 21a1.5 1.5 0 0 0-3-3 1.5 1.5 0 0 0 3 3Z" />
