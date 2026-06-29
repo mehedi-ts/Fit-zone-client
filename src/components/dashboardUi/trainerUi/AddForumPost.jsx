@@ -7,6 +7,7 @@ import { TextField, Label, Input, TextArea, Button, Card } from "@heroui/react";
 import { imageUploader } from "@/app/lib/imageUpload";
 import { useUser } from "@/app/lib/getUserClient";
 import { addForum } from "@/app/lib/actions/addForum";
+import { toast } from "react-toastify";
 
 export default function AddForumPost() {
   const user = useUser();
@@ -47,12 +48,12 @@ export default function AddForumPost() {
     e.preventDefault();
 
     if (!user) {
-      alert("You must be logged in to post in the Community Forum.");
+      toast.error("You must be logged in to post in the Community Forum.");
       return;
     }
 
     if (!formData.image) {
-      alert("Please upload an image before posting.");
+      toast.error("Please upload an image before posting.");
       return;
     }
 
@@ -71,9 +72,9 @@ export default function AddForumPost() {
     try {
       await addForum(finalPayload);
 
-      console.log("Post published successfully:", finalPayload);
+      
 
-      alert("Post published successfully!");
+      toast.success("Post published successfully!");
 
       const redirectPath =
         user.role === "admin"

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { stripe } from "../lib/stripe";
 import { bookClass } from "../lib/actions/Booking";
+import Link from "next/link";
 
 export default async function Success({ searchParams }) {
   const { session_id } = await searchParams;
@@ -42,29 +43,69 @@ export default async function Success({ searchParams }) {
   }
 
   return (
-    <section className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-lg w-full rounded-xl border bg-white p-6 text-center shadow">
+    <section className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+      <div className="max-w-md w-full rounded-2xl bg-white shadow-xl overflow-hidden">
+
         {/* SUCCESS CASE */}
         {status === "complete" && bookingResult && (
           <>
-            <h1 className="mb-4 text-3xl font-bold text-green-600">
-              Payment Successful ✅
-            </h1>
-
-            <p className="mb-2">Thank you for booking your class.</p>
-
-            <p className="mb-4 text-gray-600">
-              A confirmation email has been sent to{" "}
-              <strong>{customerEmail}</strong>
-            </p>
-
-            <div className="rounded bg-gray-100 p-4 text-left text-sm">
-              <p>
-                <strong>Class ID:</strong> {session.metadata.classId}
+            {/* Top banner */}
+            <div className="bg-green-500 px-6 py-8 flex flex-col items-center text-white">
+              <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 text-4xl">
+                ✅
+              </div>
+              <h1 className="text-2xl font-bold">Payment Successful!</h1>
+              <p className="mt-1 text-sm text-green-100">
+                Your class has been booked.
               </p>
-              <p>
-                <strong>Transaction ID:</strong> {session.payment_intent?.id}
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-6 flex flex-col gap-4">
+              <p className="text-center text-sm text-gray-500">
+                A confirmation has been sent to{" "}
+                <span className="font-semibold text-gray-700">
+                  {customerEmail}
+                </span>
               </p>
+
+              {/* Details card */}
+              <div className="rounded-xl border border-gray-100 bg-gray-50 divide-y divide-gray-100">
+                <div className="flex justify-between px-4 py-3 text-sm">
+                  <span className="text-gray-500">Class ID</span>
+                  <span className="font-medium text-gray-800 truncate max-w-[180px]">
+                    {session.metadata.classId}
+                  </span>
+                </div>
+                <div className="flex justify-between px-4 py-3 text-sm">
+                  <span className="text-gray-500">Transaction ID</span>
+                  <span className="font-medium text-gray-800 truncate max-w-[180px]">
+                    {session.payment_intent?.id}
+                  </span>
+                </div>
+                <div className="flex justify-between px-4 py-3 text-sm">
+                  <span className="text-gray-500">Amount Paid</span>
+                  <span className="font-medium text-green-600">
+                    ${(session.amount_total / 100).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                <Link
+                  href="/classes"
+                  className="flex-1 rounded-xl border border-gray-200 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Browse Classes
+                </Link>
+                <Link
+                  href="/"
+                  className="flex-1 rounded-xl bg-green-500 py-2.5 text-center text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+                >
+                  Back to Home
+                </Link>
+              </div>
             </div>
           </>
         )}
@@ -72,24 +113,49 @@ export default async function Success({ searchParams }) {
         {/* ERROR CASE */}
         {status === "complete" && !bookingResult && (
           <>
-            <h1 className="mb-4 text-3xl font-bold text-red-600">
-              Something went wrong ❌
-            </h1>
+            {/* Top banner */}
+            <div className="bg-red-500 px-6 py-8 flex flex-col items-center text-white">
+              <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 text-4xl">
+                ❌
+              </div>
+              <h1 className="text-2xl font-bold">Booking Failed</h1>
+              <p className="mt-1 text-sm text-red-100">
+                Payment went through, but booking didn&apos;t complete.
+              </p>
+            </div>
 
-            <p className="mb-3 text-gray-700">
-              Payment was successful, but we couldn&apos;t complete your
-              booking.
-            </p>
+            {/* Body */}
+            <div className="px-6 py-6 flex flex-col gap-4">
+              <p className="text-center text-sm text-gray-600">
+                Your payment was successful but we couldn&apos;t confirm your
+                booking. Please contact support with your transaction details.
+              </p>
 
-            {bookingError && (
-              <p className="mb-4 text-sm text-red-500">Error: {bookingError}</p>
-            )}
+              {bookingError && (
+                <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+                  <span className="font-medium">Error:</span> {bookingError}
+                </div>
+              )}
 
-            <p className="text-gray-500 text-sm">
-              Please contact support or try again.
-            </p>
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                <Link
+                  href="/classes"
+                  className="flex-1 rounded-xl border border-gray-200 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Browse Classes
+                </Link>
+                <Link
+                  href="/"
+                  className="flex-1 rounded-xl bg-red-500 py-2.5 text-center text-sm font-semibold text-white hover:bg-red-600 transition-colors"
+                >
+                  Back to Home
+                </Link>
+              </div>
+            </div>
           </>
         )}
+
       </div>
     </section>
   );
