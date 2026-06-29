@@ -4,15 +4,15 @@ import { ArrowUpRight, House } from "lucide-react";
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="flex min-h-screen bg-[var(--color-page-bg)]">
+    <div className="flex min-h-screen bg-page-bg">
       <Sidebar />
 
       <div className="flex flex-1 flex-col">
         {/* Header */}
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-default-100 bg-background/80 backdrop-blur-sm px-4 lg:px-7">
+        <header className="sticky top-0 z-30 flex h-19.5 items-center justify-between border-b border-default-100 bg-background/80 backdrop-blur-sm px-4 lg:px-7">
           {/* left padding on mobile so hamburger doesn't overlap */}
           <div className="flex items-center gap-3 pl-10 lg:pl-0 min-w-0">
-            <span className="hidden h-8 w-1 rounded-full bg-[var(--color-brand)] lg:block" />
+            <span className="hidden h-8 w-1 rounded-full bg-brand lg:block" />
             <div className="min-w-0">
               <h1 className="text-sm font-semibold text-foreground tracking-tight truncate">
                 Dashboard
@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }) {
             <Link
               href="/"
               aria-label="Back to home"
-              className="group flex sm:hidden h-9 w-9 items-center justify-center rounded-full border border-default-200 text-default-600 transition-all hover:border-[var(--color-brand)]/40 hover:bg-[var(--color-brand)]/5 hover:text-[var(--color-brand)]"
+              className="group flex sm:hidden h-9 w-9 items-center justify-center rounded-full border border-default-200 text-default-600 transition-all hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
             >
               <House size={16} />
             </Link>
@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }) {
             {/* Desktop — full pill with label */}
             <Link
               href="/"
-              className="group hidden sm:flex items-center gap-1.5 rounded-lg border border-default-200 px-3 py-1.5 text-xs font-medium text-default-600 transition-all hover:border-[var(--color-brand)]/40 hover:bg-[var(--color-brand)]/5 hover:text-[var(--color-brand)]"
+              className="group hidden sm:flex items-center gap-1.5 rounded-lg border border-default-200 px-3 py-1.5 text-xs font-medium text-default-600 transition-all hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
             >
               <House size={14} />
               Continue to website

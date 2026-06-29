@@ -25,6 +25,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { authClient } from "@/app/lib/auth-client";
+import Logo from "../shared/Logo";
 
 export function Sidebar() {
   const userData = useUser();
@@ -166,7 +167,7 @@ export function Sidebar() {
           type="button"
           onClick={() => setDrawerOpen(false)}
           className={`
-          group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm
+          group relative flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm
           transition-all duration-150
           ${
             isActive
@@ -226,7 +227,7 @@ export function Sidebar() {
     <div ref={menuRef} className="relative">
       <div
         onClick={() => setMenuOpen((v) => !v)}
-        className="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-default-100 cursor-pointer"
+        className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-default-100"
       >
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand to-[#ff9a6c] text-[11px] font-medium text-white">
           {userData?.name?.slice(0, 2).toUpperCase() || "RK"}
@@ -246,7 +247,7 @@ export function Sidebar() {
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-default-600 transition-colors hover:bg-default-100 hover:text-foreground"
+            className="flex cursor-pointer items-center gap-2.5 px-3.5 py-2.5 text-sm text-default-600 transition-colors hover:bg-default-100 hover:text-foreground"
           >
             <Home className="size-[16px]" />
             Back to Home
@@ -254,7 +255,7 @@ export function Sidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center gap-2.5 border-t border-default-100 px-3.5 py-2.5 text-sm text-red-500 transition-colors hover:bg-red-50"
+            className="flex w-full cursor-pointer items-center gap-2.5 border-t border-default-100 px-3.5 py-2.5 text-sm text-red-500 transition-colors hover:bg-red-50"
           >
             <LogOut className="size-[16px]" />
             Logout
@@ -268,8 +269,8 @@ export function Sidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside className="sticky top-0 hidden h-screen w-80 shrink-0 flex-col border-r border-default-100 bg-background lg:flex">
-        <div className="border-b border-default-100 px-5 py-6">
-          {brandBlock}
+        <div className="border-b border-default-100 px-5 py-4">
+          <Logo></Logo>
         </div>
 
         <div className="flex-1 overflow-y-auto px-3 py-4">{navContent}</div>
@@ -283,7 +284,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => setDrawerOpen(true)}
-          className="fixed left-4 top-3 z-50 flex h-9 w-9 items-center justify-center rounded-lg border border-default-200 bg-background shadow-sm"
+          className="fixed left-4 top-3 z-50 flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-default-200 bg-background shadow-sm"
           aria-label="Open menu"
         >
           <Bars className="size-4" />
@@ -310,7 +311,7 @@ export function Sidebar() {
             <button
               type="button"
               onClick={() => setDrawerOpen(false)}
-              className="ml-auto flex h-7 w-7 items-center justify-center rounded-md text-default-400 hover:bg-default-100"
+              className="ml-auto flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-default-400 hover:bg-default-100"
               aria-label="Close menu"
             >
               ✕
