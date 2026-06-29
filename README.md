@@ -6,6 +6,14 @@ FitZone is a full-stack fitness and gym management platform that connects **Memb
 
 ---
 
+## 🔑 Demo Admin Credentials
+
+**Email:** `admin@gmail.com`
+
+**Password:** `admin@gmail.com`
+
+---
+
 ## ✨ Key Features
 
 - 🔐 **Role-Based Access Control** — Separate, secure dashboards for Members, Trainers, and Admins, each with tailored permissions and views.

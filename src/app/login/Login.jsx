@@ -14,6 +14,7 @@ import {
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Logo from "@/components/shared/Logo";
 import { authClient } from "../lib/auth-client";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,36 +36,36 @@ export default function LoginPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      const formData = new FormData(e.currentTarget);
+  try {
+    const formData = new FormData(e.currentTarget);
 
-      const email = formData.get("email");
-      const password = formData.get("password");
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-      const { data, error } = await authClient.signIn.email({
-        email,
-        password,
-        callbackURL: "/",
-      });
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password,
+      callbackURL: "/",
+    });
 
-      if (error) {
-        console.error("Login failed:", error);
-        return;
-      }
-
-      console.log("Login success:", data);
-
-      router.push("/");
-    } catch (err) {
-      console.error("Something went wrong:", err);
-    } finally {
-      setIsSubmitting(false);
+    if (error) {
+      toast.error(error.message || "Invalid email or password.");
+      return;
     }
-  };
+
+    // Login successful
+    router.push("/");
+  } catch (err) {
+    
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <main
