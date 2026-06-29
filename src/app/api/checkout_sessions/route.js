@@ -10,10 +10,10 @@ import { getClassById } from "@/app/lib/api/getClassById";
 export async function POST(req) {
   try {
     const { bookingData } = await req.json();
-    console.log("Received booking data:", bookingData);
+    // console.log("Received booking data:", bookingData);
     const { classId } = bookingData;
     const classInfo = await getClassById(classId);
-    console.log("Fetched class info:", classInfo);
+    // console.log("Fetched class info:", classInfo);
 
     const headersList = await headers();
     const origin = headersList.get("origin");
@@ -77,7 +77,7 @@ export async function POST(req) {
       url: session.url,
     });
   } catch (error) {
-    console.error("Stripe Session Error:", error);
+    // console.error("Stripe Session Error:", error);
 
     return NextResponse.json(
       {
