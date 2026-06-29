@@ -21,8 +21,8 @@ export default async function ClassDetailsPage({ params }) {
   if (!classData) {
     notFound();
   }
-  console.log("this is classId", classData._id);
-  console.log("this is userId", user?.id);
+  // console.log("this is classId", classData._id);
+  // console.log("this is userId", user?.id);
 
   const isBooked = user ? await checkBooked(classData._id, user.id) : false;
   const isFavorited = user
