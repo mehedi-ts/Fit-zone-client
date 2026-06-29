@@ -524,16 +524,7 @@ export function TrainerClassTable({ trainerClasses, onUpdateClass, onDeleteClass
                               })
                             }
                           />
-                          <Input
-                            label="Status"
-                            value={editForm.status}
-                            onChange={(e) =>
-                              setEditForm({
-                                ...editForm,
-                                status: e.target.value,
-                              })
-                            }
-                          />
+                          
                         </div>
                       </div>
                     )}
