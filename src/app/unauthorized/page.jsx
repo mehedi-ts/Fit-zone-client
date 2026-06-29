@@ -84,18 +84,13 @@ export default function Unauthorized() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/login"
+            href="/"
             className="w-full sm:w-auto px-6 py-3 rounded-lg text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
             style={{ backgroundColor: "#ff6b35" }}
           >
-            Sign in
+            Back to Home
           </Link>
-          <Link
-            href="/"
-            className="w-full sm:w-auto px-6 py-3 rounded-lg text-sm font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
-          >
-            Back to dashboard
-          </Link>
+          
         </div>
       </div>
 

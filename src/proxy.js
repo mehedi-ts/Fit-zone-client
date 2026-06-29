@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "./app/lib/auth";
 
-
 const roleRoutes = {
   admin: "/dashboard/admin",
   trainer: "/dashboard/trainer",
@@ -11,20 +10,36 @@ const roleRoutes = {
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
-  // Dashboard এর বাইরে কিছু Protect করবো না
-  if (!pathname.startsWith("/dashboard")) {
+  // ===========================
+  // NEW: Community Details & Class Details Private Route
+  // ===========================
+  const isPrivateDetailsRoute =
+    (pathname.startsWith("/community/") && pathname !== "/community") ||
+    (pathname.startsWith("/classes/") && pathname !== "/classes");
+
+  // Dashboard অথবা Private Details Route না হলে Protect করবো না
+  if (!pathname.startsWith("/dashboard") && !isPrivateDetailsRoute) {
     return NextResponse.next();
-    }
-    
+  }
 
   // Session বের করি
   const session = await auth.api.getSession({
     headers: request.headers,
-  });console.log("this is server session",session)
+  });
+
+  console.log("this is server session", session);
 
   // Login না থাকলে Login Page
   if (!session) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // ===========================
+  // NEW: Community Details & Class Details এ শুধু Login লাগবে
+  // Role Check লাগবে না
+  // ===========================
+  if (isPrivateDetailsRoute) {
+    return NextResponse.next();
   }
 
   const role = session.user.role;
@@ -43,5 +58,13 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+
+    // NEW: Community Details Route
+    "/community/:path*",
+
+    // NEW: Classes Details Route
+    "/classes/:path*",
+  ],
 };
