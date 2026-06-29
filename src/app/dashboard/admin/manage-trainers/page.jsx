@@ -3,7 +3,7 @@ import { getActiveTrainers } from "@/app/lib/api/getActiveTrainers";
 import { getTokenServer } from "@/app/lib/getTokenServer";
 import ManageTrainersTable from "@/components/dashboardUi/adminUi/ManageTrainersTable";
 import { revalidatePath } from "next/cache";
-import React from "react";
+export const dynamic = "force-dynamic";
 
 const page = async () => {
   const trainers = await getActiveTrainers();
@@ -29,7 +29,7 @@ const page = async () => {
         revalidatePath("/dashboard/admin/manage-trainers");
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
