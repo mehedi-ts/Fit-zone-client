@@ -29,7 +29,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const { data: session, error } = authClient.useSession();
   const user = session?.user;
-  console.log(user, "Session Error:", error);
+  // console.log(user, "Session Error:", error);
   const router = useRouter();
   const pathname = usePathname();
   const isDashboard = pathname.startsWith("/dashboard");

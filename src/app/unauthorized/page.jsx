@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck, ArrowLeft } from "lucide-react";
+import { ShieldAlert, Home, ArrowLeft } from "lucide-react";
 
 export const metadata = {
   title: "Unauthorized Access | FitZone",
@@ -8,37 +8,58 @@ export const metadata = {
 
 export default function UnauthorizedPage() {
   return (
-    <main className="min-h-[85vh] w-full flex items-center justify-center px-4 py-12 bg-[var(--color-page-bg,#f8fafc)] select-none">
-      <div className="max-w-md w-full text-center bg-white border border-slate-100 p-8 sm:p-12 rounded-3xl shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col items-center relative overflow-hidden">
-        
-        {/* Top Accent Line */}
-        <div className="absolute top-0 inset-x-0 h-[4px] bg-gradient-to-r from-amber-500 to-[var(--color-brand,#f97316)]" />
+    <main className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-orange-50 via-white to-orange-100 px-6">
 
-        {/* Minimal Shield Icon with soft brand glow */}
-        <div className="w-20 h-20 flex items-center justify-center rounded-2xl bg-orange-50 border border-orange-100 text-[var(--color-brand,#f97316)] mb-8 transition-transform duration-300 hover:scale-105">
-          <ShieldCheck className="w-10 h-10 stroke-[1.5]" />
-        </div>
+      {/* Background Blur */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-orange-300/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl" />
 
-        {/* Typography */}
-        <h1 className="text-3xl font-extrabold text-[var(--color-brand-dark,#0f172a)] tracking-tight sm:text-4xl">
-          Restricted Access
+      <div className="relative w-full max-w-xl">
+
+        {/* 403 Background */}
+        <h1 className="absolute -top-16 left-1/2 -translate-x-1/2 text-[180px] font-black text-orange-100 select-none pointer-events-none">
+          403
         </h1>
-        
-        <p className="mt-4 text-sm sm:text-base text-[var(--color-brand-dark,#0f172a)]/60 leading-relaxed max-w-sm">
-          You don&apos;t have the required administrative permissions to enter this area of <span className="font-semibold text-[var(--color-brand-dark)]">FitZone</span>. 
-        </p>
 
-        {/* Elegant Minimal Divider */}
-        <div className="w-16 h-1 bg-slate-100 rounded-full my-8" />
+        <div className="relative rounded-3xl border border-white/50 bg-white/80 backdrop-blur-xl shadow-2xl p-10 text-center">
 
-        {/* Clean, High-Contrast Home Link */}
-        <Link
-          href="/"
-          className="group flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full text-sm font-bold bg-[var(--color-brand,#f97316)] text-white hover:opacity-90 active:scale-[0.98] shadow-sm transition-all duration-200 w-full sm:w-auto"
-        >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-          <span>Return to Home</span>
-        </Link>
+          {/* Icon */}
+          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg">
+            <ShieldAlert className="h-11 w-11 text-white" />
+          </div>
+
+          <h2 className="mt-8 text-4xl font-bold text-slate-900">
+            Access Denied
+          </h2>
+
+          <p className="mt-4 text-slate-600 leading-7">
+            Sorry, you don&apos;t have permission to access this page.
+            <br />
+            Please contact the administrator if you believe this is a mistake.
+          </p>
+
+          {/* Buttons */}
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+
+            <Link
+              href="/"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-orange-500 py-3.5 font-semibold text-white transition hover:bg-orange-600"
+            >
+              <Home size={18} />
+              Home
+            </Link>
+
+            <button
+              onClick={() => history.back()}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-slate-300 py-3.5 font-semibold text-slate-700 transition hover:bg-slate-100"
+            >
+              <ArrowLeft size={18} />
+              Go Back
+            </button>
+
+          </div>
+
+        </div>
 
       </div>
     </main>
