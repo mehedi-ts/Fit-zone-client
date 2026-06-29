@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🏋️‍♂️ FitZone — Fitness & Gym Management Platform
 
-## Getting Started
+FitZone is a full-stack fitness and gym management platform that connects **Members**, **Trainers**, and **Admins** in one seamless ecosystem. Members can discover and book fitness classes, engage in community discussions, and track their fitness journey. Trainers can manage their classes and share knowledge through the community forum. Admins oversee the entire platform — users, trainers, classes, and content — ensuring a safe and high-quality experience for everyone.
 
-First, run the development server:
+🔗 **Live Site:** [https://fit-zone-client.vercel.app/](https://fit-zone-client.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- 🔐 **Role-Based Access Control** — Separate, secure dashboards for Members, Trainers, and Admins, each with tailored permissions and views.
+- 🏃 **Class Discovery & Booking** — Browse, search, and filter approved fitness classes by name and category, then book seamlessly via Stripe checkout.
+- ⭐ **Favorites System** — Save favorite classes for quick access, with duplicate-proof logic and instant toast feedback.
+- 💬 **Community Forum** — Trainers and Admins publish posts; logged-in users can like, dislike, and comment with full edit/delete control over their own comments.
+- 🧑‍🏫 **Trainer Application Flow** — Members apply to become trainers; Admins review, approve, or reject with feedback — visible directly on the member's dashboard.
+- 🛡️ **Soft-Block Moderation** — Admins can restrict misbehaving users from taking actions (booking, commenting, applying) without fully banning them from browsing.
+- 💳 **Stripe Payments** — Secure checkout for class bookings, with a complete, admin-visible transaction history.
+- 📊 **Live Dashboard Analytics** — Real-time stat cards for bookings, enrolled students, total users, and total classes across all three roles.
+- 🔑 **Secure Authentication** — Better Auth with email/password and Google OAuth, backed by JWT stored in HTTPOnly cookies and verified via middleware.
+- 📱 **Fully Responsive UI** — Polished, professional design across mobile, tablet, and desktop, with smooth Framer Motion animations.
+- 🌀 **Server-Side Pagination** — Efficient, paginated data loading for the Community Forum and All Classes pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+**Frontend**
+- Next.js (App Router)
+- JavaScript
+- Tailwind CSS v4
+- HeroUI v3
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Backend**
+- Express.js
+- MongoDB
+- Better Auth (JWT + Google OAuth)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📦 Repositories
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Part | Link |
+|------|------|
+| 🌐 Client (Frontend) | [Fit-zone-client](https://github.com/mehedi-ts/Fit-zone-client.git) |
+| ⚙️ Server (Backend) | [Fit-zone-server](https://github.com/mehedi-ts/Fit-zone-server.git) |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
