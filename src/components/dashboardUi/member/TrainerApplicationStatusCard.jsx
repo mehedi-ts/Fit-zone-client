@@ -8,29 +8,27 @@ const STATUS_CONFIG = {
     title: "Application Under Review",
     description:
       "Your trainer application is currently being reviewed by our admin team.",
+    footerNote: "Please wait while admin reviews your application.",
   },
-
   Approved: {
     color: "success",
     title: "Application Approved",
     description: "Congratulations! Your trainer application has been approved.",
+    footerNote: "You can now work as an official trainer.",
   },
-
   Rejected: {
     color: "danger",
     title: "Application Rejected",
     description:
       "Unfortunately, your application was not approved at this time.",
+    footerNote: "Please check admin feedback and try again later.",
   },
 };
 
 function formatDate(dateString) {
   if (!dateString) return "—";
-
   const date = new Date(dateString);
-
   if (Number.isNaN(date.getTime())) return dateString;
-
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -44,220 +42,112 @@ export default function ApplicationStatusCard({
   specialty,
   createdAt,
   feedback,
-  compact = false,
 }) {
   const statusConfig = STATUS_CONFIG[status] || STATUS_CONFIG.Pending;
 
-  const cardContent = (
+  return (
     <Card
-      className={`
-      w-full
-      ${compact ? "h-full" : "max-w-3xl"}
-      rounded-3xl
-      border
-      border-[var(--color-brand-dark)]/10
-      bg-white
-      ${compact ? "shadow-sm" : "shadow-2xl"}
-      flex
-      flex-col
-    `}
+      className="
+        w-full
+        h-full
+        rounded-3xl
+        border
+        border-[var(--color-brand-dark)]/10
+        bg-white
+        shadow-sm
+        flex
+        flex-col
+      "
     >
-      <Card.Header
-        className={`flex flex-col items-center text-center ${
-          compact ? "p-6" : "p-8"
-        }`}
-      >
+      {/* Header */}
+      <Card.Header className="flex flex-col items-center text-center p-6">
         <Chip
           color={statusConfig.color}
           variant="flat"
-          size={compact ? "md" : "lg"}
-          className={`rounded-full font-bold ${
-            compact ? "px-4 py-1.5" : "px-5 py-2"
-          }`}
+          size="md"
+          className="rounded-full font-bold px-4 py-1.5"
         >
           {status}
         </Chip>
 
         <Card.Title
-          className={`
-          mt-5
-          font-extrabold
-          text-[var(--color-brand-dark)]
-          ${compact ? "text-xl" : "text-3xl"}
-        `}
+          className="
+            mt-4
+            text-xl
+            font-extrabold
+            text-[var(--color-brand-dark)]
+          "
         >
           {statusConfig.title}
         </Card.Title>
 
         <Card.Description
-          className={`
-          mt-3
-          max-w-xl
-          text-[var(--color-brand-dark)]/60
-          ${compact ? "text-xs" : "text-sm"}
-        `}
+          className="
+            mt-2
+            max-w-xs
+            text-xs
+            text-[var(--color-brand-dark)]/60
+          "
         >
           {statusConfig.description}
         </Card.Description>
       </Card.Header>
 
-      <Card.Content className={`flex-1 ${compact ? "p-6 pt-0" : "p-8 pt-0"}`}>
-        {/* Info Cards */}
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <div
-            className={`
-            rounded-2xl
-            bg-[var(--color-brand)]/5
-            text-center
-            ${compact ? "p-3.5" : "p-5"}
-          `}
-          >
+      {/* Content */}
+      <Card.Content className="flex-1 flex flex-col p-6 pt-0 gap-4">
+        {/* Info grid */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-2xl bg-[var(--color-brand)]/5 text-center p-3.5">
             <p className="text-xs text-[var(--color-brand-dark)]/50">
               Experience
             </p>
-
-            <h3
-              className={`
-              mt-2
-              font-bold
-              text-[var(--color-brand-dark)]
-              ${compact ? "text-lg" : "text-2xl"}
-            `}
-            >
+            <h3 className="mt-1.5 text-lg font-bold text-[var(--color-brand-dark)]">
               {experience}
             </h3>
-
-            <p className="text-sm text-[var(--color-brand-dark)]/60">Years</p>
+            <p className="text-xs text-[var(--color-brand-dark)]/60">Years</p>
           </div>
 
-          <div
-            className={`
-            rounded-2xl
-            bg-[var(--color-brand)]/5
-            text-center
-            ${compact ? "p-3.5" : "p-5"}
-          `}
-          >
+          <div className="rounded-2xl bg-[var(--color-brand)]/5 text-center p-3.5">
             <p className="text-xs text-[var(--color-brand-dark)]/50">
               Specialty
             </p>
-
-            <h3
-              className={`
-              mt-2
-              font-bold
-              text-[var(--color-brand-dark)]
-              ${compact ? "text-base" : "text-xl"}
-            `}
-            >
+            <h3 className="mt-1.5 text-base font-bold text-[var(--color-brand-dark)]">
               {specialty}
             </h3>
           </div>
 
-          <div
-            className={`
-            rounded-2xl
-            bg-[var(--color-brand)]/5
-            text-center
-            ${compact ? "p-3.5" : "p-5"}
-          `}
-          >
+          <div className="rounded-2xl bg-[var(--color-brand)]/5 text-center p-3.5">
             <p className="text-xs text-[var(--color-brand-dark)]/50">
-              Applied Date
+              Applied
             </p>
-
-            <h3
-              className="
-              mt-2
-              text-sm
-              font-semibold
-              text-[var(--color-brand-dark)]
-            "
-            >
+            <h3 className="mt-1.5 text-xs font-semibold text-[var(--color-brand-dark)]">
               {formatDate(createdAt)}
             </h3>
           </div>
         </div>
 
         {/* Feedback */}
-
         {feedback && (
           <>
-            <Separator className={compact ? "my-5" : "my-8"} />
-
-            <div
-              className={`
-              rounded-2xl
-              border
-              border-amber-200
-              bg-amber-50
-              ${compact ? "p-4" : "p-6"}
-            `}
-            >
-              <h3
-                className={`
-                mb-2
-                font-bold
-                text-amber-800
-                ${compact ? "text-sm" : "text-lg"}
-              `}
-              >
+            <Separator className="my-1" />
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+              <h3 className="mb-1.5 text-sm font-bold text-amber-800">
                 💬 Admin Feedback
               </h3>
-
-              <p
-                className={`
-                leading-relaxed
-                text-amber-900
-                ${compact ? "text-xs" : ""}
-              `}
-              >
+              <p className="text-xs leading-relaxed text-amber-900">
                 {feedback}
               </p>
             </div>
           </>
         )}
 
-        {!compact && (
-          <div
-            className="
-            mt-8
-            rounded-2xl
-            bg-[var(--color-brand)]/5
-            p-5
-            text-center
-          "
-          >
-            <p
-              className="
-              text-sm
-              leading-relaxed
-              text-[var(--color-brand-dark)]/70
-            "
-            >
-              {status === "Pending" &&
-                "Please wait while admin reviews your application."}
-
-              {status === "Approved" &&
-                "You can now work as an official trainer."}
-
-              {status === "Rejected" &&
-                "Please check admin feedback and try again later."}
-            </p>
-          </div>
-        )}
+        {/* Footer note */}
+        <div className="mt-auto rounded-2xl bg-[var(--color-brand)]/5 p-4 text-center">
+          <p className="text-xs leading-relaxed text-[var(--color-brand-dark)]/70">
+            {statusConfig.footerNote}
+          </p>
+        </div>
       </Card.Content>
     </Card>
-  );
-
-  if (compact) {
-    return cardContent;
-  }
-
-  return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4 py-10">
-      {cardContent}
-    </div>
   );
 }

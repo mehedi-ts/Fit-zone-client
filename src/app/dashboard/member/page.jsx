@@ -31,49 +31,52 @@ export default async function MemberOverviewPage() {
   );
 
   return (
-    <div>
+    <div className="space-y-6">
+      {/* Stats Row */}
       <StatisticsSection stats={stats} />
 
-      <div className="">
-        <DashboardProfile />
+      {/* Profile — full width */}
+      <DashboardProfile />
 
-        {/* {trainerApplication?._id ? (
-          <ApplicationStatusCard
-            status={trainerApplication.status}
-            experience={trainerApplication.experience}
-            specialty={trainerApplication.specialty}
-            createdAt={trainerApplication.createdAt}
-            feedback={trainerApplication.feedback}
-          />
-        ) : (
-          <div className="w-full mx-auto md:p-4 mt-6">
-            <h2 className="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4">
-              Become a Trainer
-            </h2>
+      {/* Trainer Application — below profile, full width */}
+      {trainerApplication?._id ? (
+        <ApplicationStatusCard
+          status={trainerApplication.status}
+          experience={trainerApplication.experience}
+          specialty={trainerApplication.specialty}
+          createdAt={trainerApplication.createdAt}
+          feedback={trainerApplication.feedback}
+        />
+      ) : (
+        <div className="w-full flex flex-col">
+          <h2 className="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4">
+            Become a Trainer
+          </h2>
 
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center gap-3 h-full justify-center">
-              <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
-                <UserPlus className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-900">
-                  Ready to lead classes?
-                </h3>
-                <p className="text-xs text-gray-500 mt-1 max-w-[240px]">
-                  Apply to become a trainer and start creating your own
-                  fitness classes.
-                </p>
-              </div>
-              <Link
-                href="/dashboard/member/apply-trainer"
-                className="mt-1 inline-flex items-center justify-center rounded-xl bg-[var(--color-brand)] text-white text-sm font-semibold px-5 py-2.5 hover:opacity-90 transition-opacity"
-              >
-                Apply as Trainer
-              </Link>
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <UserPlus className="w-7 h-7" />
             </div>
+
+            <div>
+              <h3 className="text-base font-bold text-gray-900">
+                Ready to lead classes?
+              </h3>
+              <p className="text-sm text-gray-500 mt-1.5 max-w-sm mx-auto">
+                Apply to become a trainer and start creating your own fitness
+                classes.
+              </p>
+            </div>
+
+            <Link
+              href="/dashboard/member/apply-trainer"
+              className="mt-1 inline-flex items-center justify-center rounded-xl bg-[var(--color-brand)] text-white text-sm font-semibold px-6 py-2.5 hover:opacity-90 transition-opacity"
+            >
+              Apply as Trainer
+            </Link>
           </div>
-        )} */}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, Card } from "@heroui/react";
+import { Button, Card, Modal, Alert, useOverlayState } from "@heroui/react";
+import { Trash2 } from "lucide-react";
 
 function formatDate(isoString) {
   return new Date(isoString).toLocaleDateString("en-US", {
@@ -13,12 +14,31 @@ function formatDate(isoString) {
   });
 }
 
-export default function CommunityForum({ posts }) {
-  // If the parent hasn't passed posts yet (e.g. still fetching on
-  // its side), treat undefined as "loading". An explicit [] means
-  // "loaded, but empty".
+export default function CommunityForum({ posts, handleDelete }) {
+  const deleteOverlay = useOverlayState();
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const isLoading = posts === undefined;
   const safePosts = Array.isArray(posts) ? posts : [];
+
+  const openDeleteModal = (post) => {
+    setSelectedPost(post);
+    deleteOverlay.open();
+  };
+
+  const onConfirmDelete = async () => {
+    if (!selectedPost || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await handleDelete(selectedPost);
+      deleteOverlay.close();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen py-10 px-4">
@@ -33,7 +53,6 @@ export default function CommunityForum({ posts }) {
               Everything you&apos;ve shared with the Community Forum.
             </p>
           </div>
-
           <Link href="/dashboard/trainer/add-forum-post">
             <Button className="bg-brand text-white font-medium shadow-sm shadow-orange-500/20 px-6 hover:opacity-90 transition-opacity rounded-xl">
               + New Post
@@ -41,22 +60,21 @@ export default function CommunityForum({ posts }) {
           </Link>
         </div>
 
-        {/* Loading state */}
+        {/* Loading */}
         {isLoading && (
           <div className="flex justify-center items-center py-20">
             <p className="text-sm text-slate-400">Loading your posts...</p>
           </div>
         )}
 
-        {/* Empty state */}
+        {/* Empty */}
         {!isLoading && safePosts.length === 0 && (
           <Card className="bg-white/70 backdrop-blur-md border border-slate-100 shadow-sm rounded-3xl p-10 flex flex-col items-center text-center gap-3">
             <p className="text-base font-medium text-slate-700">
               You haven&apos;t posted anything yet
             </p>
             <p className="text-sm text-slate-400 max-w-sm">
-              Share a tip, a win, or an announcement and it&apos;ll show up
-              here.
+              Share a tip, a win, or an announcement and it&apos;ll show up here.
             </p>
             <Link href="/dashboard/trainer/add-forum-post" className="mt-2">
               <Button className="bg-brand text-white font-medium shadow-sm shadow-orange-500/20 px-6 hover:opacity-90 transition-opacity rounded-xl">
@@ -94,12 +112,75 @@ export default function CommunityForum({ posts }) {
                   <p className="text-sm text-slate-500 leading-relaxed line-clamp-3 flex-1">
                     {post.description}
                   </p>
+
+                  {/* Delete Button */}
+                  <div className="pt-2 border-t border-slate-100 mt-auto">
+                    <Button
+                      size="sm"
+                      color="danger"
+                      variant="flat"
+                      className="w-full"
+                      startContent={<Trash2 size={14} />}
+                      onPress={() => openDeleteModal(post)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </Card.Content>
               </Card>
             ))}
           </div>
         )}
       </div>
+
+      {/* ════════ DELETE CONFIRMATION MODAL ════════ */}
+      <Modal state={deleteOverlay}>
+        <Modal.Backdrop>
+          <Modal.Container size="sm" className="mx-4 sm:mx-auto">
+            <Modal.Dialog>
+              <Modal.CloseTrigger />
+
+              <Modal.Body className="pt-6">
+                {selectedPost && (
+                  <Alert color="danger" variant="faded" className="mb-1">
+                    <Alert.Title className="text-base font-semibold">
+                      Delete &quot;{selectedPost.title}&quot;?
+                    </Alert.Title>
+                    <Alert.Description className="text-sm text-default-600 mt-1">
+                      This action{" "}
+                      <span className="font-semibold text-danger">
+                        cannot be undone
+                      </span>
+                      . The post will be permanently removed.
+                    </Alert.Description>
+                  </Alert>
+                )}
+              </Modal.Body>
+
+              <Modal.Footer className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <Button
+                  variant="bordered"
+                  className="w-full sm:w-auto"
+                  isDisabled={isSubmitting}
+                  onPress={() => deleteOverlay.close()}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="danger"
+                  className="w-full sm:w-auto"
+                  startContent={<Trash2 size={15} />}
+                  isLoading={isSubmitting}
+                  isDisabled={isSubmitting}
+                  onPress={onConfirmDelete}
+                >
+                  Delete Permanently
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
     </div>
   );
 }

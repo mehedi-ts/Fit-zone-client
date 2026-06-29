@@ -18,9 +18,7 @@ const ProfileRow = ({ icon: Icon, label, value, isBadge, badgeTone = "emerald" }
       </div>
       <div>
         {isBadge ? (
-          <span
-            className={`text-xs font-semibold px-2.5 py-1 rounded-full ${badgeStyles[badgeTone]}`}
-          >
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${badgeStyles[badgeTone]}`}>
             {value}
           </span>
         ) : (
@@ -70,12 +68,12 @@ const DashboardProfile = async () => {
   const initials = userData?.name?.slice(0, 2).toUpperCase() || "??";
 
   return (
-    <div className="w-full mx-auto md:p-4 mt-6 h-full flex flex-col">
+    <div className="w-full h-full flex flex-col">
       <h2 className="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4">
         Profile
       </h2>
 
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex-1">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex-1 flex flex-col">
         {/* Top Header Row */}
         <div className="flex items-center gap-4 pb-6 border-b border-gray-100">
           {/* Avatar */}
