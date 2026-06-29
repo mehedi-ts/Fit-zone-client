@@ -18,7 +18,7 @@ export default async function AllClassesPage({ searchParams }) {
   return (
     <div className="min-h-screen py-8 sm:py-10 px-4 bg-[var(--color-page-bg)]">
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-6 sm:gap-8">
-        {/* HEADER */}
+        
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-brand-dark)]">
             All Classes
