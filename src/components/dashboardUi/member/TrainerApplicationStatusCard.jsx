@@ -44,172 +44,182 @@ export default function ApplicationStatusCard({
   specialty,
   createdAt,
   feedback,
+  compact = false,
 }) {
   const statusConfig = STATUS_CONFIG[status] || STATUS_CONFIG.Pending;
 
-  return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4 py-10">
-      <Card
-        className="
-        w-full 
-        max-w-3xl
-        rounded-3xl
-        border
-        border-[var(--color-brand-dark)]/10
-        bg-white
-        shadow-2xl
-      "
+  const cardContent = (
+    <Card
+      className={`
+      w-full
+      ${compact ? "h-full" : "max-w-3xl"}
+      rounded-3xl
+      border
+      border-[var(--color-brand-dark)]/10
+      bg-white
+      ${compact ? "shadow-sm" : "shadow-2xl"}
+      flex
+      flex-col
+    `}
+    >
+      <Card.Header
+        className={`flex flex-col items-center text-center ${
+          compact ? "p-6" : "p-8"
+        }`}
       >
-        <Card.Header className="flex flex-col items-center p-8 text-center">
-          <Chip
-            color={statusConfig.color}
-            variant="flat"
-            size="lg"
-            className="rounded-full px-5 py-2 font-bold"
+        <Chip
+          color={statusConfig.color}
+          variant="flat"
+          size={compact ? "md" : "lg"}
+          className={`rounded-full font-bold ${
+            compact ? "px-4 py-1.5" : "px-5 py-2"
+          }`}
+        >
+          {status}
+        </Chip>
+
+        <Card.Title
+          className={`
+          mt-5
+          font-extrabold
+          text-[var(--color-brand-dark)]
+          ${compact ? "text-xl" : "text-3xl"}
+        `}
+        >
+          {statusConfig.title}
+        </Card.Title>
+
+        <Card.Description
+          className={`
+          mt-3
+          max-w-xl
+          text-[var(--color-brand-dark)]/60
+          ${compact ? "text-xs" : "text-sm"}
+        `}
+        >
+          {statusConfig.description}
+        </Card.Description>
+      </Card.Header>
+
+      <Card.Content className={`flex-1 ${compact ? "p-6 pt-0" : "p-8 pt-0"}`}>
+        {/* Info Cards */}
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <div
+            className={`
+            rounded-2xl
+            bg-[var(--color-brand)]/5
+            text-center
+            ${compact ? "p-3.5" : "p-5"}
+          `}
           >
-            {status}
-          </Chip>
+            <p className="text-xs text-[var(--color-brand-dark)]/50">
+              Experience
+            </p>
 
-          <Card.Title
-            className="
-            mt-5
-            text-3xl
-            font-extrabold
-            text-[var(--color-brand-dark)]
-          "
-          >
-            {statusConfig.title}
-          </Card.Title>
-
-          <Card.Description
-            className="
-            mt-3
-            max-w-xl
-            text-sm
-            text-[var(--color-brand-dark)]/60
-          "
-          >
-            {statusConfig.description}
-          </Card.Description>
-        </Card.Header>
-
-        <Card.Content className="p-8 pt-0">
-          {/* Info Cards */}
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <div
-              className="
-              rounded-2xl
-              bg-[var(--color-brand)]/5
-              p-5
-              text-center
-            "
+            <h3
+              className={`
+              mt-2
+              font-bold
+              text-[var(--color-brand-dark)]
+              ${compact ? "text-lg" : "text-2xl"}
+            `}
             >
-              <p className="text-xs text-[var(--color-brand-dark)]/50">
-                Experience
-              </p>
+              {experience}
+            </h3>
 
-              <h3
-                className="
-                mt-2
-                text-2xl
-                font-bold
-                text-[var(--color-brand-dark)]
-              "
-              >
-                {experience}
-              </h3>
-
-              <p className="text-sm text-[var(--color-brand-dark)]/60">Years</p>
-            </div>
-
-            <div
-              className="
-              rounded-2xl
-              bg-[var(--color-brand)]/5
-              p-5
-              text-center
-            "
-            >
-              <p className="text-xs text-[var(--color-brand-dark)]/50">
-                Specialty
-              </p>
-
-              <h3
-                className="
-                mt-2
-                text-xl
-                font-bold
-                text-[var(--color-brand-dark)]
-              "
-              >
-                {specialty}
-              </h3>
-            </div>
-
-            <div
-              className="
-              rounded-2xl
-              bg-[var(--color-brand)]/5
-              p-5
-              text-center
-            "
-            >
-              <p className="text-xs text-[var(--color-brand-dark)]/50">
-                Applied Date
-              </p>
-
-              <h3
-                className="
-                mt-2
-                text-sm
-                font-semibold
-                text-[var(--color-brand-dark)]
-              "
-              >
-                {formatDate(createdAt)}
-              </h3>
-            </div>
+            <p className="text-sm text-[var(--color-brand-dark)]/60">Years</p>
           </div>
 
-          {/* Feedback */}
+          <div
+            className={`
+            rounded-2xl
+            bg-[var(--color-brand)]/5
+            text-center
+            ${compact ? "p-3.5" : "p-5"}
+          `}
+          >
+            <p className="text-xs text-[var(--color-brand-dark)]/50">
+              Specialty
+            </p>
 
-          {feedback && (
-            <>
-              <Separator className="my-8" />
+            <h3
+              className={`
+              mt-2
+              font-bold
+              text-[var(--color-brand-dark)]
+              ${compact ? "text-base" : "text-xl"}
+            `}
+            >
+              {specialty}
+            </h3>
+          </div>
 
-              <div
-                className="
-                rounded-2xl
-                border
-                border-amber-200
-                bg-amber-50
-                p-6
-              "
+          <div
+            className={`
+            rounded-2xl
+            bg-[var(--color-brand)]/5
+            text-center
+            ${compact ? "p-3.5" : "p-5"}
+          `}
+          >
+            <p className="text-xs text-[var(--color-brand-dark)]/50">
+              Applied Date
+            </p>
+
+            <h3
+              className="
+              mt-2
+              text-sm
+              font-semibold
+              text-[var(--color-brand-dark)]
+            "
+            >
+              {formatDate(createdAt)}
+            </h3>
+          </div>
+        </div>
+
+        {/* Feedback */}
+
+        {feedback && (
+          <>
+            <Separator className={compact ? "my-5" : "my-8"} />
+
+            <div
+              className={`
+              rounded-2xl
+              border
+              border-amber-200
+              bg-amber-50
+              ${compact ? "p-4" : "p-6"}
+            `}
+            >
+              <h3
+                className={`
+                mb-2
+                font-bold
+                text-amber-800
+                ${compact ? "text-sm" : "text-lg"}
+              `}
               >
-                <h3
-                  className="
-                  mb-2
-                  text-lg
-                  font-bold
-                  text-amber-800
-                "
-                >
-                  💬 Admin Feedback
-                </h3>
+                💬 Admin Feedback
+              </h3>
 
-                <p
-                  className="
-                  leading-relaxed
-                  text-amber-900
-                "
-                >
-                  {feedback}
-                </p>
-              </div>
-            </>
-          )}
+              <p
+                className={`
+                leading-relaxed
+                text-amber-900
+                ${compact ? "text-xs" : ""}
+              `}
+              >
+                {feedback}
+              </p>
+            </div>
+          </>
+        )}
 
+        {!compact && (
           <div
             className="
             mt-8
@@ -236,8 +246,18 @@ export default function ApplicationStatusCard({
                 "Please check admin feedback and try again later."}
             </p>
           </div>
-        </Card.Content>
-      </Card>
+        )}
+      </Card.Content>
+    </Card>
+  );
+
+  if (compact) {
+    return cardContent;
+  }
+
+  return (
+    <div className="flex min-h-[80vh] items-center justify-center px-4 py-10">
+      {cardContent}
     </div>
   );
 }
