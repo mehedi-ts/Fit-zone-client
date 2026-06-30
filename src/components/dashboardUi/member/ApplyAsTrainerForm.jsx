@@ -45,6 +45,11 @@ export default function ApplyAsTrainerForm() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+     if (userinfo?.status === "blocked") {
+    toast.error("Action restricted by Admin");
+    return;
+  }
+
     setExperienceTouched(true);
     setSpecialtyTouched(true);
 
