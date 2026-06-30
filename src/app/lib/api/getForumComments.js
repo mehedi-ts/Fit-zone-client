@@ -12,15 +12,33 @@ export async function getForumComments(forumId) {
   return res.json();
 }
 
-export async function addForumComment(forumId, { userId, userName, userImage, text }) {
+export async function addForumComment(
+  forumId,
+  { userId, userName, userImage, text, parentId = null }
+) {
   const res = await fetch(`${SERVER_URL}/api/forums/${forumId}/comments`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, userName, userImage, text }),
+    body: JSON.stringify({ userId, userName, userImage, text, parentId }),
   });
 
   if (!res.ok) {
-    throw new Error("Failed to add comment");
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data?.message || "Failed to add comment");
+  }
+
+  return res.json();
+}
+
+export async function editForumComment(commentId, userId, text) {
+  const res = await fetch(`${SERVER_URL}/api/forums/comments/${commentId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, text }),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to edit comment");
   }
 
   return res.json();

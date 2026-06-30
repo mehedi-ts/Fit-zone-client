@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { toggleForumLike } from "@/app/lib/api/getForumLikes";
+import { toast } from "react-toastify";
 
 
 export default function LikeDislike({ forumId, user, initialLikes }) {
@@ -16,6 +17,11 @@ export default function LikeDislike({ forumId, user, initialLikes }) {
   const handleVote = async (type) => {
     if (!user) {
       // not logged in — nothing to vote with
+      return;
+    }
+
+    if (user?.status === "blocked") {
+      toast.error("Action restricted by Admin");
       return;
     }
     if (pending) return;
@@ -65,7 +71,7 @@ export default function LikeDislike({ forumId, user, initialLikes }) {
         onClick={() => handleVote("like")}
         disabled={!user || pending}
         title={!user ? "Login to vote" : undefined}
-        className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium border transition disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium border transition disabled:cursor-not-allowed cursor-pointer disabled:opacity-50 ${
           userVote === "like"
             ? "bg-[var(--color-brand)] text-white border-[var(--color-brand)]"
             : "border-gray-200 text-gray-600 hover:bg-gray-50"
@@ -79,7 +85,7 @@ export default function LikeDislike({ forumId, user, initialLikes }) {
         onClick={() => handleVote("dislike")}
         disabled={!user || pending}
         title={!user ? "Login to vote" : undefined}
-        className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium border transition disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium border transition disabled:cursor-not-allowed cursor-pointer disabled:opacity-50 ${
           userVote === "dislike"
             ? "bg-gray-700 text-white border-gray-700"
             : "border-gray-200 text-gray-600 hover:bg-gray-50"
