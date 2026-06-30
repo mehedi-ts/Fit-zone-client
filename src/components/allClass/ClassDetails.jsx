@@ -67,7 +67,7 @@ function initials(name) {
 
 export default function ClassDetails({ classData, isBooked, isFavorited }) {
   const user = useUser();
-  console.log("this is details page user", user);
+  
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [alreadyBooked, setAlreadyBooked] = useState(isBooked);
@@ -98,6 +98,19 @@ export default function ClassDetails({ classData, isBooked, isFavorited }) {
     setAlreadyBooked(true);
     setIsModalOpen(false);
   };
+  const handleBookClick = () => {
+  if (!user?.id) {
+    toast.error("Please log in to book a class.");
+    return;
+  }
+
+  if (user?.status === "blocked") {
+    toast.error("Action restricted by Admin");
+    return;
+  }
+
+  setIsModalOpen(true);
+};
   const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
   const toggleFavorite = async () => {
     if (!user?.id) {
@@ -301,7 +314,7 @@ export default function ClassDetails({ classData, isBooked, isFavorited }) {
               <button
                 type="button"
                 onClick={() => toast.info("This class is already booked.")}
-                className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 font-medium px-6 py-3 rounded-xl border border-emerald-200"
+                className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 font-medium px-6 py-3 rounded-xl border border-emerald-200 cursor-pointer"
               >
                 <Check size={16} />
                 Already Booked
@@ -309,8 +322,8 @@ export default function ClassDetails({ classData, isBooked, isFavorited }) {
             ) : (
               <button
                 type="button"
-                onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-brand text-white font-medium px-6 py-3 rounded-xl shadow-sm shadow-orange-500/20 hover:opacity-90 transition-opacity"
+                onClick={handleBookClick}
+                className="inline-flex items-center gap-2 bg-brand text-white font-medium px-6 py-3 rounded-xl shadow-sm shadow-orange-500/20 hover:opacity-90 transition-opacity cursor-pointer"
               >
                 Book Class
                 <ArrowRight size={16} />
