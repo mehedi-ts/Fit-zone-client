@@ -60,7 +60,7 @@ function Avatar({ name, image, size = 36 }) {
 // Shared helper — blocks any write action (post / reply / edit) for blocked users
 function isBlocked(user) {
   if (user?.status === "blocked") {
-    toast.error("You can't comment — your account has been blocked by Admin.");
+    toast.error("Action restricted by Admin");
     return true;
   }
   return false;
