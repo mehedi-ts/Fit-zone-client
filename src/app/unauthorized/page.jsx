@@ -26,15 +26,48 @@ export default function Unauthorized() {
               strokeWidth="3"
             />
 
-            {/* vertical rack bars */}
-            <line x1="70" y1="30" x2="70" y2="128" stroke="#e2e8f0" strokeWidth="2" />
-            <line x1="190" y1="30" x2="190" y2="128" stroke="#e2e8f0" strokeWidth="2" />
+            <line
+              x1="70"
+              y1="30"
+              x2="70"
+              y2="128"
+              stroke="#e2e8f0"
+              strokeWidth="2"
+            />
+            <line
+              x1="190"
+              y1="30"
+              x2="190"
+              y2="128"
+              stroke="#e2e8f0"
+              strokeWidth="2"
+            />
 
-            {/* dumbbell resting inside, dimmed — out of reach */}
             <g opacity="0.35">
-              <rect x="95" y="73" width="70" height="9" rx="4.5" fill="#111827" />
-              <rect x="85" y="62" width="11" height="32" rx="3" fill="#111827" />
-              <rect x="164" y="62" width="11" height="32" rx="3" fill="#111827" />
+              <rect
+                x="95"
+                y="73"
+                width="70"
+                height="9"
+                rx="4.5"
+                fill="#111827"
+              />
+              <rect
+                x="85"
+                y="62"
+                width="11"
+                height="32"
+                rx="3"
+                fill="#111827"
+              />
+              <rect
+                x="164"
+                y="62"
+                width="11"
+                height="32"
+                rx="3"
+                fill="#111827"
+              />
             </g>
 
             {/* padlock, centered on the gate */}
@@ -77,9 +110,9 @@ export default function Unauthorized() {
         </h1>
 
         <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-10 leading-relaxed">
-          You don&apos;t have access to this page with your current role.
-          Sign in with an account that has the right permissions, or head
-          back to somewhere you&apos;re cleared for.
+          You don&apos;t have access to this page with your current role. Sign
+          in with an account that has the right permissions, or head back to
+          somewhere you&apos;re cleared for.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -90,7 +123,6 @@ export default function Unauthorized() {
           >
             Back to Home
           </Link>
-          
         </div>
       </div>
 
