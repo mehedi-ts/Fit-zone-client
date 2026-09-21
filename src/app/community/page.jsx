@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import ForumCard from "@/components/shared/ForumCard";
 import React from "react";
 import { getAllForums } from "../lib/api/getAllForum";

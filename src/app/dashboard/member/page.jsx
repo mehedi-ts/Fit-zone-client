@@ -2,11 +2,13 @@ import { getTokenServer } from "@/app/lib/getTokenServer";
 import { getUser } from "@/app/lib/getUser";
 import { getStatsConfig } from "@/app/lib/statsConfig";
 import { getTrainerApplicationByUserId } from "@/app/lib/api/getTrainerApplicationByUserId";
-import DashboardProfile from "@/components/dashboardUi/dashboardProfile";
+import { getFavoritesClasses } from "@/app/lib/api/getFavoritesClassesByUserId";
 import ApplicationStatusCard from "@/components/dashboardUi/member/TrainerApplicationStatusCard";
-import { StatisticsSection } from "@/components/dashboardUi/shared/StatisticsSection";
+import { MemberProfileCard } from "@/components/dashboardUi/member/MemberProfileCard";
+import { MemberSummaryCards } from "@/components/dashboardUi/member/MemberSummaryCards";
+import { MemberCharts } from "@/components/dashboardUi/member/MemberCharts";
 import Link from "next/link";
-import { UserPlus } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 async function getMemberStats(userId, token) {
   const res = await fetch(
@@ -25,20 +27,28 @@ export default async function MemberOverviewPage() {
 
   const data = await getMemberStats(user?.id || "", token);
   const stats = getStatsConfig("member", data);
+  
+  const totalBooked = stats?.find((s) => s.id === 1)?.value ?? 0;
+  const favorites = stats?.find((s) => s.id === 2)?.value ?? 0;
 
   const trainerApplication = await getTrainerApplicationByUserId(
     user?._id || user?.id,
   );
 
+  const favoriteClasses = await getFavoritesClasses(user?.id);
+
   return (
     <div className="space-y-6">
-      {/* Stats Row */}
-      <StatisticsSection stats={stats} />
+      {/* Profile Card */}
+      <MemberProfileCard userData={user} totalBooked={totalBooked} favorites={favorites} />
 
-      {/* Profile — full width */}
-      <DashboardProfile />
+      {/* Summary Cards */}
+      <MemberSummaryCards totalBooked={totalBooked} favorites={favorites} />
 
-      {/* Trainer Application — below profile, full width */}
+      {/* Charts Row */}
+      <MemberCharts totalBooked={totalBooked} favoriteClasses={favoriteClasses} />
+
+      {/* Trainer Application Banner */}
       {trainerApplication?._id ? (
         <ApplicationStatusCard
           status={trainerApplication.status}
@@ -48,35 +58,36 @@ export default async function MemberOverviewPage() {
           feedback={trainerApplication.feedback}
         />
       ) : (
-        <div className="w-full flex flex-col">
-          <h2 className="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4">
-            Become a Trainer
-          </h2>
-
-          <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm flex flex-col items-center justify-center text-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
-              <UserPlus className="w-7 h-7" />
+        <div className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#ff6b2b] via-[#ff5a1f] to-[#593f36] p-8 shadow-sm text-white flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col gap-2 z-10">
+            <span className="text-[10px] font-bold tracking-widest text-[#ffceb3] uppercase">
+              Limited spots open
+            </span>
+            <div className="flex flex-col">
+              <h2 className="text-2xl font-bold tracking-tight">
+                Share your expertise.
+              </h2>
+              <h2 className="text-2xl font-bold tracking-tight text-white mb-2">
+                Become a FitZone Trainer.
+              </h2>
             </div>
-
-            <div>
-              <h3 className="text-base font-bold text-gray-900">
-                Ready to lead classes?
-              </h3>
-              <p className="text-sm text-gray-500 mt-1.5 max-w-sm mx-auto">
-                Apply to become a trainer and start creating your own fitness
-                classes.
-              </p>
-            </div>
-
-            <Link
-              href="/dashboard/member/apply-trainer"
-              className="mt-1 inline-flex items-center justify-center rounded-xl bg-[var(--color-brand)] text-white text-sm font-semibold px-6 py-2.5 hover:opacity-90 transition-opacity"
-            >
-              Apply as Trainer
-            </Link>
+            <p className="text-sm text-[#ffceb3] max-w-md">
+              Join 200+ certified trainers. Set your own classes, grow your community.
+            </p>
           </div>
+
+          <Link
+            href="/dashboard/member/apply-trainer"
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-white text-[#ff5a1f] text-sm font-bold px-6 py-3 hover:bg-gray-50 transition-colors z-10 shadow-sm"
+          >
+            Apply Now
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          
+          {/* Background decorative elements */}
+          <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-black/20 to-transparent pointer-events-none rounded-r-2xl"></div>
         </div>
       )}
     </div>
   );
-}
+}
