@@ -33,7 +33,12 @@ export function Sidebar() {
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const dashboardItems = {
     member: [
@@ -230,13 +235,13 @@ export function Sidebar() {
         className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-default-100"
       >
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand to-[#ff9a6c] text-[11px] font-medium text-white">
-          {userData?.name?.slice(0, 2).toUpperCase() || "RK"}
+          {mounted && userData?.name ? userData.name.slice(0, 2).toUpperCase() : "..."}
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-foreground">
-            {userData?.name || ""}
+            {mounted && userData?.name ? userData.name : "Loading..."}
           </p>
-          <p className="text-[11px] text-default-400">{userData?.role || ""}</p>
+          <p className="text-[11px] text-default-400">{mounted && userData?.role ? userData.role : ""}</p>
         </div>
         <MoreHorizontal className="ml-auto size-4 text-default-300" />
       </div>
